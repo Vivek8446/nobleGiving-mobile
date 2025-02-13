@@ -1,5 +1,6 @@
-import { KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 export default function LoginScreen({ navigation }) {
     
@@ -13,7 +14,10 @@ export default function LoginScreen({ navigation }) {
               style={styles.contentContainer}
             >
               <View style={styles.logoContainer}>
-                <Text style={styles.logoText}>nobleGiving</Text>
+              <Image
+                        source={require('../assets/fullnamelogo.png')} // Replace with your splash logo
+                        style={styles.logo}
+                      />
               </View>
               <Text style={styles.welcomeText}>Welcome back!</Text>
               <TextInput
@@ -30,13 +34,16 @@ export default function LoginScreen({ navigation }) {
                 secureTextEntry
               />
               <View style={styles.rememberContainer}>
-                <TouchableOpacity 
+                  <BouncyCheckbox
                   style={styles.checkbox}
-                  onPress={() => setRememberMe(!rememberMe)}
-                >
-                  {rememberMe && <Text>✓</Text>}
-                </TouchableOpacity>
-                <Text style={styles.rememberText}>Remember me</Text>
+                  useBuiltInState
+                    isChecked={rememberMe}
+                    onPress={() => setRememberMe(!rememberMe)}
+                    fillColor="#164860"
+                    innerIconStyle={{borderRadius: 5}}
+                    iconStyle={{borderRadius: 5}} 
+                  />
+                   <Text style={styles.rememberText}>Remember me</Text>
                 <TouchableOpacity>
                   <Text style={styles.forgotPassword}>Forgot password?</Text>
                 </TouchableOpacity>
@@ -53,7 +60,7 @@ export default function LoginScreen({ navigation }) {
                 </TouchableOpacity>
               </View>
               <View style={styles.socialButtonsContainer}>
-                <TouchableOpacity style={styles.socialButton}>
+                {/* <TouchableOpacity style={styles.socialButton}>
                   <Text>🌐</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.socialButton}>
@@ -61,10 +68,14 @@ export default function LoginScreen({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.socialButton}>
                   <Text>f</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.socialButton}>
-                  <Text>G</Text>
+                  <Image
+                                           source={require('../assets/google-color.png')} // Replace with your splash logo
+                                           style={styles.Glogo}
+                                         />
                 </TouchableOpacity>
+                  <Text style={styles.signInText}>Sign in with another account</Text>
               </View>
             </KeyboardAvoidingView>
           </SafeAreaView>
@@ -89,6 +100,14 @@ const styles = StyleSheet.create(
     fontWeight: 'bold',
     color: '#164860',
   },
+  Glogo: {
+    width: 35,
+    height: 35,
+    marginBottom: 0,
+    // flex:1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+  },
   welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -100,6 +119,11 @@ const styles = StyleSheet.create(
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
+  },
+  logo: {
+    width: 350,
+    height: 250,
+    marginBottom: 20,
   },
   button: {
     borderRadius: 10,
@@ -120,7 +144,7 @@ const styles = StyleSheet.create(
     fontWeight: 'bold',
   },
   buttonTextPurple: {
-    color: '#6c63ff',
+    color: '#164860',
     fontWeight: 'bold',
   },
   socialButtonsContainer: {
@@ -151,19 +175,19 @@ const styles = StyleSheet.create(
   checkbox: {
     width: 20,
     height: 20,
-    borderWidth: 1,
-    borderColor: '#6c63ff',
-    borderRadius: 4,
-    marginRight: 10,
+    // borderWidth: 1,
+    // borderColor: '#164860',
+    borderRadius: 0,
+    marginLeft: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
   rememberText: {
-    color: '#666',
+    color: '#164860',
     flex: 1,
   },
   forgotPassword: {
-    color: '#6c63ff',
+    color: '#164860',
   },
   signUpContainer: {
     flexDirection: 'row',
@@ -174,7 +198,7 @@ const styles = StyleSheet.create(
     color: '#666',
   },
   signUpLink: {
-    color: '#6c63ff',
+    color: '#164860',
     fontWeight: 'bold',
   },
 })
