@@ -12,6 +12,7 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 const SignupScreen = ({ navigation }) => {
   const [formData, setFormData] = useState({
@@ -54,7 +55,7 @@ const SignupScreen = ({ navigation }) => {
             <Text style={styles.subtitle}>Sign up now to start making donations</Text>
 
             <View style={styles.inputContainer}>
-              {/* <Icon name="user" size={20} color="#666" style={styles.inputIcon} /> */}
+              <Icon name="user" size={20} color="#666" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 placeholder="Full Name"
@@ -114,12 +115,14 @@ const SignupScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.termsContainer}>
-              <TouchableOpacity
-                style={styles.checkbox}
-                onPress={() => setAgreeToTerms(!agreeToTerms)}
-              >
-                {agreeToTerms && <Icon name="check" size={16} color="#0D2847" />}
-              </TouchableOpacity>
+              <BouncyCheckbox
+                        style={styles.checkbox}
+                        useBuiltInState
+                        onPress={() => setAgreeToTerms(!agreeToTerms)}
+                        fillColor="#164860"
+                        innerIconStyle={{borderRadius: 5}}
+                        iconStyle={{borderRadius: 5}} 
+                      />
               <Text style={styles.termsText}>
                 By Signing up, you agree to the{' '}
                 <Text style={styles.termsLink}>terms and conditions</Text>.
@@ -174,7 +177,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#0D2847',
+    color: '#164860',
     marginBottom: 8,
   },
   subtitle: {
@@ -213,14 +216,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
     marginBottom: 24,
+    marginLeft: 12,
   },
   checkbox: {
     width: 20,
     height: 20,
-    borderWidth: 1,
-    borderColor: '#0D2847',
+    // borderWidth: 1,
+    borderColor: '#164860',
     borderRadius: 4,
-    marginRight: 12,
+    marginRight: 6,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -230,11 +234,11 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   termsLink: {
-    color: '#0D2847',
+    color: '#164860',
     textDecorationLine: 'underline',
   },
   createButton: {
-    backgroundColor: '#0D2847',
+    backgroundColor: '#164860',
     borderRadius: 8,
     height: 56,
     justifyContent: 'center',
