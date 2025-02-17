@@ -1,8 +1,20 @@
-import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
+import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function LoginScreen({ navigation }) {
+type RootStackParamList = {
+  Login:undefined;
+  SignUp:undefined;
+};
+
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList,'Login'>;
+
+interface LoginScreenProps{
+  navigation:LoginScreenNavigationProp;
+}
+
+const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
     
         const [username, setUsername] = useState('');
         const [password, setPassword] = useState('');
@@ -59,18 +71,7 @@ export default function LoginScreen({ navigation }) {
                   <Text style={styles.signUpLink}>Sign Up</Text>
                 </TouchableOpacity>
               </View>
-
-              {/* <View style={styles.socialButtonsContainer}>
-                <TouchableOpacity style={styles.socialButton}>
-                  <Image                  
-                    source={require('../assets/google-color.png')} // Replace with your splash logo
-                    style={styles.Glogo}
-                  />
-                </TouchableOpacity>
-                  <Text style={styles.signInText}>Sign in with another account</Text>
-              </View> */}
-
-
+              
                 <TouchableOpacity style={[styles.signInButton,styles.gloginbutton]}>
                   <View style={styles.signInContent}>
                       <Image 
@@ -86,6 +87,9 @@ export default function LoginScreen({ navigation }) {
           </SafeAreaView>
         );
       };
+
+      export default LoginScreen;
+
 const styles = StyleSheet.create(
     {container: {
     flex: 1,
@@ -154,9 +158,6 @@ const styles = StyleSheet.create(
     fontWeight: 'bold',
   },
 
-
-
-
   socialButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -177,9 +178,6 @@ const styles = StyleSheet.create(
     color: '#666',
     marginTop: 10,
   },
-
-
-
   
   rememberContainer: {
     flexDirection: 'row',
@@ -237,6 +235,5 @@ const styles = StyleSheet.create(
     color: '#000000',
     fontWeight: 'bold',
   },
-
 
 })

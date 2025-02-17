@@ -1,7 +1,15 @@
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack'; 
 
-export default function WelcomeScreen({navigation}) {
+// Define the type for navigation
+type WelcomeScreenNavigationProp = StackNavigationProp<any>;
+
+interface WelcomeScreenProps {
+  navigation:WelcomeScreenNavigationProp;
+} 
+
+const WelcomeScreen:React.FC<WelcomeScreenProps> = ({navigation}) => {
         return (
           <SafeAreaView style={styles.container}>
             <View style={styles.contentContainer}>
@@ -12,14 +20,15 @@ export default function WelcomeScreen({navigation}) {
                       />
               </View>
               <Text style={styles.welcomeText}>Welcome!</Text>
+
               <TouchableOpacity 
                 style={[styles.button, styles.createAccountButton]}
                 onPress={() => navigation.navigate('SignUp')}
               >
                 <Text style={styles.buttonTextWhite}
-                 onPress={() => navigation.navigate('SignUp')}
                 >Create Account</Text>
               </TouchableOpacity>
+
               <TouchableOpacity 
                 style={[styles.button, styles.loginButton]}
                 onPress={() => navigation.navigate('Login')}
@@ -49,6 +58,8 @@ export default function WelcomeScreen({navigation}) {
           </SafeAreaView>
         );
       };
+
+export default WelcomeScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -214,7 +225,6 @@ const styles = StyleSheet.create({
          
    
 });
-
 
 
 

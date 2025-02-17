@@ -12,8 +12,20 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-const SignupScreen = ({ navigation }) => {
+type RootStackParamList = {
+  Login:undefined;
+  SignUp:undefined;
+};
+
+type SignupScreenNavigationProp = StackNavigationProp<RootStackParamList,'SignUp'>;
+
+interface SignupScreenProps{
+  navigation:SignupScreenNavigationProp;
+}
+
+const SignupScreen:React.FC<SignupScreenProps> = ({ navigation }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -43,9 +55,9 @@ const SignupScreen = ({ navigation }) => {
               {/* <Icon name="feather" size={40} color="#6c63ff" />
               <Text style={styles.logoText}>NobleGiving</Text> */}
                <Image
-                                      source={require('../assets/fullnamelogo.png')} // Replace with your splash logo
-                                      style={styles.logo}
-                                    />
+                source={require('../assets/fullnamelogo.png')} // Replace with your splash logo
+                style={styles.logo}
+                />
             </View>
           </View>
 
@@ -138,6 +150,8 @@ const SignupScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
+export default SignupScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -246,5 +260,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default SignupScreen;
