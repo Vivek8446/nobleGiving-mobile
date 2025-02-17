@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View,Alert,ScrollView,ImageBackground } from 'react-native'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -90,10 +90,10 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
         );
       };
 
-      export default LoginScreen;
+    export default LoginScreen;
 
-const styles = StyleSheet.create(
-    {container: {
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
     backgroundColor: '#fff',
   },

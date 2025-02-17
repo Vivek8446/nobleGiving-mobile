@@ -27,13 +27,13 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
     // Fade-in animation
     Animated.timing(fadeAnim, {
       toValue: 1, // Fade to full opacity
-      duration: 700, // 1 second duration
+      duration: 1000, // 1 second duration
       useNativeDriver: true,
     }).start();
 
     const timer = setTimeout(() => {
       if (isMounted) navigateToWelcome();
-    }, 1000);
+    }, 1300);
 
     return () => {
       isMounted = false;
