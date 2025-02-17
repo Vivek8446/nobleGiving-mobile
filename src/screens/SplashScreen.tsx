@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useCallback, useRef } from 'react';
+import { View, StyleSheet, Image, Animated } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,6 +15,8 @@ interface Props {
 }
 
 const SplashScreen: React.FC<Props> = ({ navigation }) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current; // Start opacity at 0
+
   const navigateToWelcome = useCallback(() => {
     navigation.replace('Welcome');
   }, [navigation]);
@@ -22,21 +24,28 @@ const SplashScreen: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     let isMounted = true;
 
+    // Fade-in animation
+    Animated.timing(fadeAnim, {
+      toValue: 1, // Fade to full opacity
+      duration: 700, // 1 second duration
+      useNativeDriver: true,
+    }).start();
+
     const timer = setTimeout(() => {
       if (isMounted) navigateToWelcome();
-    }, 2000);
+    }, 1000);
 
     return () => {
       isMounted = false;
       clearTimeout(timer);
     };
-  }, [navigateToWelcome]);
+  }, [fadeAnim, navigateToWelcome]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logoContainer}>
+      <Animated.View style={[styles.logoContainer, { opacity: fadeAnim }]}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 };
