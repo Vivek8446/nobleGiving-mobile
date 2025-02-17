@@ -29,7 +29,7 @@ const SignupScreen:React.FC<SignupScreenProps> = ({ navigation }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
-    phoneNumber: '+91',
+    phoneNumber: '',
     password: '',
     confirmPassword: '',
   });
@@ -52,8 +52,6 @@ const SignupScreen:React.FC<SignupScreenProps> = ({ navigation }) => {
           {/* Logo Section */}
           <View style={styles.logoSection}>
             <View style={styles.logoContainer}>
-              {/* <Icon name="feather" size={40} color="#6c63ff" />
-              <Text style={styles.logoText}>NobleGiving</Text> */}
                <Image
                 source={require('../assets/fullnamelogo.png')} // Replace with your splash logo
                 style={styles.logo}
@@ -66,7 +64,7 @@ const SignupScreen:React.FC<SignupScreenProps> = ({ navigation }) => {
             <Text style={styles.subtitle}>Sign up now to start making donations</Text>
 
             <View style={styles.inputContainer}>
-              {/* <Icon name="user" size={20} color="#666" style={styles.inputIcon} /> */}
+              <Icon name="user" size={20} color="#666" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 placeholder="Full Name"
@@ -88,6 +86,7 @@ const SignupScreen:React.FC<SignupScreenProps> = ({ navigation }) => {
 
             <View style={styles.inputContainer}>
               {/* <Text style={styles.countryCode}>🇮🇳</Text> */}
+              <Icon name="phone" size={20} color="#666" style={styles.inputIcon} />
               <TextInput
                 style={[styles.input, styles.phoneInput]}
                 placeholder="+91"
@@ -106,9 +105,7 @@ const SignupScreen:React.FC<SignupScreenProps> = ({ navigation }) => {
                 value={formData.password}
                 onChangeText={(text) => setFormData({ ...formData, password: text })}
               />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Icon name={showPassword ? "eye-off" : "eye"} size={20} color="#666" />
-              </TouchableOpacity>
+ 
             </View>
 
             <View style={styles.inputContainer}>
@@ -169,8 +166,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   logo: {
-    width: 350,
-    height: 250,
+    width: 320,
+    height: 220,
     marginBottom: 0,
   },
   logoContainer: {
@@ -208,7 +205,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   inputIcon: {
-    marginRight: 12,
+    marginRight: 8,
   },
   input: {
     flex: 1,

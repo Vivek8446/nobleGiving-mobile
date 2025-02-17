@@ -45,6 +45,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
                 onChangeText={setPassword}
                 secureTextEntry
               />
+              
               <View style={styles.rememberContainer}>
                   <BouncyCheckbox
                   style={styles.checkbox}
@@ -56,8 +57,9 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
                     iconStyle={{borderRadius: 5}} 
                   />
                    <Text style={styles.rememberText}>Remember me</Text>
+
                 <TouchableOpacity>
-                  <Text style={styles.forgotPassword}>Forgot password?</Text>
+                  <Text style={[styles.forgotPassword,styles.termsLink]}>Forgot password?</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity 
@@ -68,7 +70,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
               <View style={styles.signUpContainer}>
                 <Text style={styles.signUpText}>New user? </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                  <Text style={styles.signUpLink}>Sign Up</Text>
+                  <Text style={[styles.signUpLink,styles.termsLink]}>Sign Up</Text>
                 </TouchableOpacity>
               </View>
               
@@ -234,6 +236,10 @@ const styles = StyleSheet.create(
   buttonTextBlack: {
     color: '#000000',
     fontWeight: 'bold',
+  },
+  termsLink: {
+    color: '#0D2847',
+    textDecorationLine: 'underline',
   },
 
 })
