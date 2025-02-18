@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
-import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View,Alert,ScrollView,ImageBackground } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, View,Alert,ScrollView,ImageBackground } from 'react-native'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Formik, FormikHelpers } from 'formik';
+import { Formik} from 'formik';
 import FormInput from '../components/FormInput';
 import ErrorMessage from '../components/ErrorMessage';
 import * as Yup from 'yup';
+import { useNavigation } from '@react-navigation/native';
+import api from '../services/apiClient';
+import { EndPoint } from '../services/apiServices';
 
 type RootStackParamList = {
   Login:undefined;
@@ -30,22 +33,37 @@ const validationSchema = Yup.object().shape({
       .min(6, 'Password must be at least 6 characters')
 })
 
-const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
-    
-        const [username, setUsername] = useState('');
-        const [password, setPassword] = useState('');
-        const [rememberMe, setRememberMe] = useState(false);
+const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
+  // const [email, setEmail] = useState<string>('');
+  // const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  // const navigation = useNavigation();
 
-        const handleSubmit = (
-          values: { email: string; password: string },
-          { resetForm }: FormikHelpers<{ email: string; password: string }>
-        ) => {
-          if (values.email.length > 0 && values.password.length > 0) {
-              Alert.alert('Login Successful!', 'Welcome back!'); // Replace with your own login logic
-            navigation.navigate('Home');
-            resetForm(); // Reset form after successful login
-          }
-        };
+  const handleLogin = async (email: string, password: string) => {
+    setLoading(true);
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await api.post(EndPoint.login, { email, password });
+
+      console.log('Login Successful:', response.data);
+      // Alert.alert('Success', 'Login Successful');
+
+      // Navigate to Home screen after successful login
+      navigation.navigate('Home' as never);
+    } catch (error) {
+      console.error('Login Error:', error);
+      Alert.alert('Error', 'Invalid email or password');
+      setLoading(false);
+    }finally {
+      setLoading(false);
+    }
+  };
 
         return (
           <KeyboardAvoidingView
@@ -67,7 +85,6 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
                      keyboardShouldPersistTaps="handled"
                   showsVerticalScrollIndicator={false}
                 >
-         
           <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView 
               behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -85,7 +102,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
 
           <Formik
             initialValues={{ email: '' , password: ''}}
-            onSubmit={handleSubmit}
+            onSubmit={(values) => handleLogin(values.email, values.password)}
             validationSchema={validationSchema} 
            >
             {({ handleChange, handleBlur, handleSubmit, values,errors,isValid }) => (
@@ -106,7 +123,6 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
                         value={values.password}
                         secureTextEntry/>
                         <ErrorMessage errorValue={errors.password} />
-                {/* <Button onPress={handleSubmit} title="Submit" /> */}
                 <View style={styles.rememberContainer}>
                           <BouncyCheckbox
                           style={styles.checkbox}
@@ -123,12 +139,12 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
                           <Text style={[styles.forgotPassword,styles.termsLink]}>Forgot password?</Text>
                         </TouchableOpacity>
                       </View>
-                      <TouchableOpacity 
+                      <TouchableOpacity
                         style={[styles.button, styles.createAccountButton]}
-                        onPress={()=> handleSubmit()}
+                        onPress={ handleSubmit}
                         // disabled={!isValid}
                       >
-                        <Text style={styles.buttonTextWhite} >Login</Text>
+                      {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.buttonTextWhite} >Login</Text>}
                       </TouchableOpacity>
               </View>
             )}
@@ -139,7 +155,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
 
               <View style={styles.signUpContainer}>
                 <Text style={styles.signUpText}>New user? </Text>
-                <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                <TouchableOpacity onPress={() => navigation.navigate('SignUp' as never)}>
                   <Text style={[styles.signUpLink,styles.termsLink]}>Sign Up</Text>
                 </TouchableOpacity>
               </View>
