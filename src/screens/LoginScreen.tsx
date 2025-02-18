@@ -2,10 +2,15 @@ import React, { useState } from 'react'
 import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View,Alert,ScrollView,ImageBackground } from 'react-native'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Formik, FormikHelpers } from 'formik';
+import FormInput from '../components/FormInput';
+import ErrorMessage from '../components/ErrorMessage';
+import * as Yup from 'yup';
 
 type RootStackParamList = {
   Login:undefined;
   SignUp:undefined;
+  Home:undefined;
 };
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList,'Login'>;
@@ -14,11 +19,34 @@ interface LoginScreenProps{
   navigation:LoginScreenNavigationProp;
 }
 
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+  .label('Email')
+  .email('Enter a valid email address')
+  .required('Please enter a registered email'),
+  password: Yup.string()
+      .label('Password')
+      .required('Password is required')
+      .min(6, 'Password must be at least 6 characters')
+})
+
 const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
     
         const [username, setUsername] = useState('');
         const [password, setPassword] = useState('');
         const [rememberMe, setRememberMe] = useState(false);
+
+        const handleSubmit = (
+          values: { email: string; password: string },
+          { resetForm }: FormikHelpers<{ email: string; password: string }>
+        ) => {
+          if (values.email.length > 0 && values.password.length > 0) {
+              Alert.alert('Login Successful!', 'Welcome back!'); // Replace with your own login logic
+            navigation.navigate('Home');
+            resetForm(); // Reset form after successful login
+          }
+        };
+
         return (
           <KeyboardAvoidingView
           behavior="height" // 👈 'height' ensures input fields are not pushed up
@@ -52,41 +80,63 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
                       />
               </View>
               <Text style={styles.welcomeText}>Welcome back!</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Username"
-                value={username}
-                onChangeText={setUsername}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-              />
-              
-              <View style={styles.rememberContainer}>
-                  <BouncyCheckbox
-                  style={styles.checkbox}
-                  useBuiltInState
-                    isChecked={rememberMe}
-                    onPress={() => setRememberMe(!rememberMe)}
-                    fillColor="#164860"
-                    innerIconStyle={{borderRadius: 5}}
-                    iconStyle={{borderRadius: 5}} 
-                  />
-                   <Text style={styles.rememberText}>Remember me</Text>
 
-                <TouchableOpacity>
-                  <Text style={[styles.forgotPassword,styles.termsLink]}>Forgot password?</Text>
-                </TouchableOpacity>
+            {/* Formik Validation Starts */}
+
+          <Formik
+            initialValues={{ email: '' , password: ''}}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema} 
+           >
+            {({ handleChange, handleBlur, handleSubmit, values,errors,isValid }) => (
+              <View>
+                <FormInput
+                      name="email"
+                      placeholder="Email"
+                      onChangeText={handleChange('email')}
+                      onBlur={handleBlur('email')}
+                      value={values.email}
+                />
+                <ErrorMessage errorValue={errors.email} />
+                    <FormInput
+                        name="password"
+                        placeholder="Password"
+                        onChangeText={handleChange('password')}
+                        onBlur={handleBlur('password')}
+                        value={values.password}
+                        secureTextEntry/>
+                        <ErrorMessage errorValue={errors.password} />
+                {/* <Button onPress={handleSubmit} title="Submit" /> */}
+                <View style={styles.rememberContainer}>
+                          <BouncyCheckbox
+                          style={styles.checkbox}
+                          useBuiltInState
+                            isChecked={rememberMe}
+                            onPress={() => setRememberMe(!rememberMe)}
+                            fillColor="#164860"
+                            innerIconStyle={{borderRadius: 5}}
+                            iconStyle={{borderRadius: 5}} 
+                          />
+                          <Text style={styles.rememberText}>Remember me</Text>
+
+                        <TouchableOpacity>
+                          <Text style={[styles.forgotPassword,styles.termsLink]}>Forgot password?</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <TouchableOpacity 
+                        style={[styles.button, styles.createAccountButton]}
+                        onPress={()=> handleSubmit()}
+                        // disabled={!isValid}
+                      >
+                        <Text style={styles.buttonTextWhite} >Login</Text>
+                      </TouchableOpacity>
               </View>
-              <TouchableOpacity 
-                style={[styles.button, styles.createAccountButton]}
-              >
-                <Text style={styles.buttonTextWhite}>Login</Text>
-              </TouchableOpacity>
+            )}
+          </Formik>
+             
+        {/* Formik Validation Finishes */}
+        
+
               <View style={styles.signUpContainer}>
                 <Text style={styles.signUpText}>New user? </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
@@ -274,4 +324,7 @@ const styles = StyleSheet.create({
   //   alignItems: 'center',
   // },
 })
+
+
+
 
