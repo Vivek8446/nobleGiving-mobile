@@ -20,6 +20,26 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
         const [password, setPassword] = useState('');
         const [rememberMe, setRememberMe] = useState(false);
         return (
+          <KeyboardAvoidingView
+          behavior="height" // 👈 'height' ensures input fields are not pushed up
+          style={styles.container}
+          >
+          <ImageBackground 
+            source={require('../assets/bg-1.png')}
+            style={styles.backgroundImage}
+          > 
+                {/* <ScrollView 
+                  contentContainerStyle={styles.scrollViewContent}
+                  bounces={true}
+                  showsVerticalScrollIndicator={true}
+                  scrollEnabled={true}
+                > */}
+                <ScrollView 
+                  contentContainerStyle={styles.scrollViewContent}
+                     keyboardShouldPersistTaps="handled"
+                  showsVerticalScrollIndicator={false}
+                >
+         
           <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView 
               behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -27,7 +47,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
             >
               <View style={styles.logoContainer}>
               <Image
-                        source={require('../assets/fullnamelogo.png')} // Replace with your splash logo
+                        source={require('../assets/Soft-White.png')} // Replace with your splash logo
                         style={styles.logo}
                       />
               </View>
@@ -73,7 +93,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
                   <Text style={[styles.signUpLink,styles.termsLink]}>Sign Up</Text>
                 </TouchableOpacity>
               </View>
-              
+             
                 <TouchableOpacity style={[styles.signInButton,styles.gloginbutton]}>
                   <View style={styles.signInContent}>
                       <Image 
@@ -83,28 +103,36 @@ const LoginScreen:React.FC<LoginScreenProps> = ({ navigation }) => {
                       <Text style={styles.buttonTextBlack}>Sign in with another account</Text>
                     </View>
                   </TouchableOpacity>
-
-
             </KeyboardAvoidingView>
           </SafeAreaView>
+          </ScrollView>
+          </ImageBackground>
+          </KeyboardAvoidingView>
+
         );
       };
-
     export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: {
+  backgroundImage: {
     flex: 1,
-    backgroundColor: '#fff',
+    width: '100%',
+    height: '100%',
+  },
+  container: {
+    flex:1,
+    backgroundColor:'transparent',
+    justifyContent:'center',
   },
   contentContainer: {
     flex: 1,
-    padding: 20,
+    padding: 23,
     justifyContent: 'center',
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 28,
+    zIndex:1
   },
   logoText: {
     fontSize: 24,
@@ -115,16 +143,13 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     marginRight:10,
-    // marginBottom: 0,
-    // flex:1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
   },
   welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 43,
     textAlign: 'center',
+    color:'#164860'
   },
   input: {
     backgroundColor: '#f5f5f5',
@@ -133,9 +158,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   logo: {
-    width: 350,
-    height: 250,
-    marginBottom: 20,
+    width: 280,
+    height: 170,
+    marginBottom: 95,
   },
   button: {
     borderRadius: 10,
@@ -165,22 +190,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
   },
-  socialButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   signInText: {
     textAlign: 'center',
     color: '#666',
     marginTop: 10,
   },
-  
   rememberContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -223,7 +237,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     marginTop: 23,
-    
   },
   gloginbutton:{
     borderWidth: 0.5,
@@ -241,5 +254,24 @@ const styles = StyleSheet.create({
     color: '#0D2847',
     textDecorationLine: 'underline',
   },
+  keyboardAvoidView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
 
+  // socialButton: {
+  //   width: 40,
+  //   height: 40,
+  //   borderRadius: 20,
+  //   borderWidth: 1,
+  //   borderColor: '#ddd',
+  //   backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  //   marginHorizontal: 10,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
 })
+
