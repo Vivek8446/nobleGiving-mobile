@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Define the type for navigation
 type WelcomeScreenNavigationProp = StackNavigationProp<any>;
@@ -10,6 +11,7 @@ interface WelcomeScreenProps {
 } 
 
 const WelcomeScreen:React.FC<WelcomeScreenProps> = ({navigation}) => {
+
         return (
           <SafeAreaView style={styles.container}>
             <View style={styles.contentContainer}>

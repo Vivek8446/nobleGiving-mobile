@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, View,Alert,ScrollView,ImageBackground } from 'react-native'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
 import api from '../services/apiClient';
 import { EndPoint } from '../services/apiServices';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   Login:undefined;
@@ -37,7 +38,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
   // const [email, setEmail] = useState<string>('');
   // const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
   // const navigation = useNavigation();
 
   const handleLogin = async (email: string, password: string) => {
@@ -49,10 +50,13 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
     }
 
     try {
-      const response = await api.post(EndPoint.login, { email, password });
+      const response = await api.post(EndPoint.login, { email, password, rememberMe });
 
       console.log('Login Successful:', response.data);
-      // Alert.alert('Success', 'Login Successful');
+
+      const token = response.data.user.token;
+      console.log('body', response);
+      await AsyncStorage.setItem('userToken', token);
 
       // Navigate to Home screen after successful login
       navigation.navigate('Home' as never);
@@ -135,13 +139,13 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
                           />
                           <Text style={styles.rememberText}>Remember me</Text>
 
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword' as never)}>
                           <Text style={[styles.forgotPassword,styles.termsLink]}>Forgot password?</Text>
                         </TouchableOpacity>
                       </View>
                       <TouchableOpacity
                         style={[styles.button, styles.createAccountButton]}
-                        onPress={ handleSubmit}
+                        onPress={handleSubmit}
                         // disabled={!isValid}
                       >
                       {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.buttonTextWhite} >Login</Text>}

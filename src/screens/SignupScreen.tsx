@@ -105,8 +105,7 @@ const SignupScreen:React.FC<SignupScreenProps> = ({ navigation }) => {
                 value={formData.password}
                 onChangeText={(text) => setFormData({ ...formData, password: text })}
               />
- 
-            </View>
+             </View>
 
             <View style={styles.inputContainer}>
               <Icon name="lock" size={20} color="#666" style={styles.inputIcon} />
@@ -212,6 +211,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#333',
   },
+  // input: {
+    //      backgroundColor: '#f5f5f5',
+    //      borderRadius: 10,
+    //      padding: 15,
+    // },
+
   countryCode: {
     fontSize: 20,
     marginRight: 8,
