@@ -6,7 +6,7 @@ import { Formik} from 'formik';
 import FormInput from '../components/FormInput';
 import ErrorMessage from '../components/ErrorMessage';
 import * as Yup from 'yup';
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import api from '../services/apiClient';
 import { EndPoint } from '../services/apiServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -60,6 +60,14 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
 
       // Navigate to Home screen after successful login
       navigation.navigate('Home' as never);
+
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Home' }], // Replace 'Home' with your target screen
+        })
+      );
+
     } catch (error) {
       console.error('Login Error:', error);
       Alert.alert('Error', 'Invalid email or password');
@@ -331,18 +339,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
   },
-
-  // socialButton: {
-  //   width: 40,
-  //   height: 40,
-  //   borderRadius: 20,
-  //   borderWidth: 1,
-  //   borderColor: '#ddd',
-  //   backgroundColor: 'rgba(255, 255, 255, 0.9)',
-  //   marginHorizontal: 10,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
 })
 
 

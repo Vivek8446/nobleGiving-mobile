@@ -1,11 +1,11 @@
 //api.Services.ts
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const EndPoint = {
     login: 'doner/auth/login',
     signUp: 'doner/auth/signup',
     get_user: 'user/profile',
-    get_forgotpassword_otp: 'send-doner-otp',
+    get_otp: 'send-doner-otp',
     verify_otp: 'verify-otp',
     reset_password: 'reset-pass',
     get_all_ngo: 'getallNgos?',

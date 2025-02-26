@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { EndPoint } from '../services/apiServices';
-const ForgotPasswordScreen = ({ navigation }: any) => {
+const ForgotPasswordScreen:React.FC<WelcomeScreenProps> = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
 
   const handleSendCode = async () => {
@@ -13,13 +13,13 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
     }
 
     try {
-      const response = await axios.post(EndPoint.get_forgotpassword_otp, {
+      const response = await axios.post(EndPoint.get_otp, {
         email,
       });
 
       if (response.status === 200) {
         Alert.alert('Success', 'A reset code has been sent to your email.');
-        navigation.navigate('VerifyCode'); // Navigate to verification screen
+        navigation.navigate('VerifyOTP'); // Navigate to verification screen
       } else {
         throw new Error(response.data.message || 'Something went wrong.');
       }

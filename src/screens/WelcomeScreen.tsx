@@ -25,7 +25,7 @@ const WelcomeScreen:React.FC<WelcomeScreenProps> = ({navigation}) => {
 
               <TouchableOpacity 
                 style={[styles.button, styles.createAccountButton]}
-                onPress={() => navigation.navigate('SignUp')}
+                onPress={() => navigation.navigate('Signup')}
               >
                 <Text style={styles.buttonTextWhite}
                 >Create Account</Text>
