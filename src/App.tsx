@@ -18,7 +18,7 @@ const App = () => {
         <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
         <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}} />
-        <Stack.Screen name="SignUp" component={SignupScreen} options={{headerShown: false}} />
+        <Stack.Screen name="Signup" component={SignupScreen} options={{headerShown: false}} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{headerShown: false}} />
         <Stack.Screen name="verifyOTP" component={ForgotPasswordScreen} options={{headerShown: false}} />
       </Stack.Navigator>

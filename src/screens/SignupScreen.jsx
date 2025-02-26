@@ -40,7 +40,8 @@ const SignupSchema = Yup.object().shape({
     .required('Phone number is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
+    .required('Password is required')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Confirm password is required'),
@@ -132,7 +133,6 @@ const SignupScreen: React.FC = () => {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.logoText}>NobleGiving</Text>
         </View>
 
         <Text style={styles.title}>Create an Account</Text>
@@ -154,7 +154,7 @@ const SignupScreen: React.FC = () => {
           }) => (
             <View style={styles.formContainer}>
               <View style={styles.inputContainer}>
-                <Icon name="user" size={20} color="#023047" style={styles.inputIcon} />
+                <Icon name="user" size={20} color="#164860" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Full Name"
@@ -168,7 +168,7 @@ const SignupScreen: React.FC = () => {
               )}
 
               <View style={styles.inputContainer}>
-                <Icon name="mail" size={20} color="#023047" style={styles.inputIcon} />
+                <Icon name="mail" size={20} color="#164860" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Email"
@@ -190,7 +190,7 @@ const SignupScreen: React.FC = () => {
                     style={styles.flagIcon}
                   /> */}
                   <Text style={styles.countryCode}>+91</Text>
-                  <Icon name="chevron-down" size={16} color="#023047" />
+                  <Icon name="chevron-down" size={16} color="#164860" />
                 </View>
                 <TextInput
                   style={styles.phoneInput}
@@ -206,7 +206,7 @@ const SignupScreen: React.FC = () => {
               )}
 
               <View style={styles.inputContainer}>
-                <Icon name="lock" size={20} color="#023047" style={styles.inputIcon} />
+                <Icon name="lock" size={20} color="#164860" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Password"
@@ -219,7 +219,7 @@ const SignupScreen: React.FC = () => {
                   onPress={() => setShowPassword(!showPassword)}
                   style={styles.eyeIcon}
                 >
-                  <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} color="#023047" />
+                  <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} color="#164860" />
                 </TouchableOpacity>
               </View>
               {touched.password && errors.password && (
@@ -227,7 +227,7 @@ const SignupScreen: React.FC = () => {
               )}
 
               <View style={styles.inputContainer}>
-                <Icon name="lock" size={20} color="#023047" style={styles.inputIcon} />
+                <Icon name="lock" size={20} color="#164860" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Confirm Password"
@@ -243,7 +243,7 @@ const SignupScreen: React.FC = () => {
                   <Icon
                     name={showConfirmPassword ? 'eye-off' : 'eye'}
                     size={20}
-                    color="#023047"
+                    color="#164860"
                   />
                 </TouchableOpacity>
               </View>
@@ -256,7 +256,7 @@ const SignupScreen: React.FC = () => {
                   style={styles.checkbox}
                   onPress={() => setFieldValue('agreeToTerms', !values.agreeToTerms)}
                 >
-                  {values.agreeToTerms && <Icon name="check" size={16} color="#023047" />}
+                  {values.agreeToTerms && <Icon name="check" size={16} color="#164860" />}
                 </TouchableOpacity>
                 <Text style={styles.termsText}>
                   By Signing up, you agree to the{' '}
@@ -309,24 +309,26 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 320,
+    height: 220,
+    marginBottom: -30,
+    marginTop: -40,
   },
   logoText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#023047',
+    color: '#164860',
     marginTop: -10,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#023047',
+    color: '#164860',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#3d5a80',
+    color: '#164860',
     marginBottom: 24,
   },
   formContainer: {
@@ -394,7 +396,7 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderWidth: 1,
-    borderColor: '#023047',
+    borderColor: '#164860',
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
@@ -403,14 +405,14 @@ const styles = StyleSheet.create({
   termsText: {
     flex: 1,
     fontSize: 14,
-    color: '#023047',
+    color: '#164860',
   },
   termsLink: {
-    color: '#023047',
+    color: '#164860',
     textDecorationLine: 'underline',
   },
   createButton: {
-    backgroundColor: '#023047',
+    backgroundColor: '#164860',
     borderRadius: 8,
     height: 56,
     alignItems: 'center',
@@ -429,11 +431,11 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 16,
-    color: '#023047',
+    color: '#164860',
   },
   loginLink: {
     fontSize: 16,
-    color: '#023047',
+    color: '#164860',
     fontWeight: 'bold',
   },
   errorText: {

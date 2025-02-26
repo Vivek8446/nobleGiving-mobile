@@ -161,17 +161,13 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
               </View>
             )}
           </Formik>
-             
         {/* Formik Validation Finishes */}
-        
-
               <View style={styles.signUpContainer}>
                 <Text style={styles.signUpText}>New user? </Text>
                 <TouchableOpacity onPress={() => navigation.navigate('SignUp' as never)}>
                   <Text style={[styles.signUpLink,styles.termsLink]}>Sign Up</Text>
                 </TouchableOpacity>
               </View>
-             
                 <TouchableOpacity style={[styles.signInButton,styles.gloginbutton]}>
                   <View style={styles.signInContent}>
                       <Image 
