@@ -10,6 +10,8 @@ import { CommonActions, useNavigation } from '@react-navigation/native';
 import api from '../services/apiClient';
 import { EndPoint } from '../services/apiServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {signInWithGoogle} from '../services/googleAuth';
+import {authenticateUser} from '../services/apiServices'
 
 type RootStackParamList = {
   Login:undefined;
@@ -76,6 +78,30 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
       setLoading(false);
     }
   };
+      // ---------------------------------------------------------------------------------------
+
+      const handleGoogleLogin = async () => {
+        const userInfo = await signInWithGoogle();
+    
+        if (userInfo) {
+          console.log('Google User:', userInfo);
+          const googleToken = userInfo.idToken;
+    
+          // Send token to backend for verification
+          const response = await authenticateUser(googleToken);
+    
+          if (response) {
+            Alert.alert('Login Successful');
+            navigation.navigate('Home'); // Navigate to Home screen after login
+          } else {
+            Alert.alert('Login Failed');
+          }
+        } else {
+          Alert.alert('Google Sign-In Failed');
+        }
+      };
+  
+      // ---------------------------------------------------------------------------------------
 
         return (
           <KeyboardAvoidingView
@@ -168,7 +194,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
                   <Text style={[styles.signUpLink,styles.termsLink]}>Sign Up</Text>
                 </TouchableOpacity>
               </View>
-                <TouchableOpacity style={[styles.signInButton,styles.gloginbutton]}>
+                <TouchableOpacity style={[styles.signInButton,styles.gloginbutton]} onPress={()=> handleGoogleLogin()}>
                   <View style={styles.signInContent}>
                       <Image 
                         source={require('../assets/google-color.png')}
@@ -176,7 +202,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
                       />
                       <Text style={styles.buttonTextBlack}>Sign in with another account</Text>
                     </View>
-                  </TouchableOpacity>
+                </TouchableOpacity>
             </KeyboardAvoidingView>
           </SafeAreaView>
           </ScrollView>

@@ -216,7 +216,7 @@ import api from '../services/apiClient';
       </Text>
 
       <View style={styles.inputContainer}>
-        <Icon name="email-outline" size={20} color="#666" style={styles.icon} />
+        <Icon name="email-outline" size={20} color="#164860" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Enter your email address"

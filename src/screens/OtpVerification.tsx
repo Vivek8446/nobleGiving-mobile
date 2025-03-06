@@ -68,7 +68,7 @@ const OtpVerification: React.FC<OtpVerificationProps & {navigation:any;route:any
       <Text style={styles.subtitle}>Enter the verification code sent to your email</Text>
       
       <View style={styles.inputContainer}>
-        <Icon name="key" size={20} color="#666" style={styles.icon} />
+        <Icon name="key" size={20} color="#164860" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Enter verification code"

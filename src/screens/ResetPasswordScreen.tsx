@@ -121,7 +121,7 @@ const ResetPasswordScreen = ({ navigation, route }: any) => {
                 <Text style={styles.subtitle}>Create your new password</Text>
                 
                 <View style={styles.inputWrapper}>
-                  <Icon name="lock" size={20} color="#A0AEC0" style={styles.inputIcon} />
+                  <Icon name="lock" size={20} color="#164860" style={styles.inputIcon} />
                   <TextInput
                     style={styles.input}
                     placeholder="Enter new password"
@@ -135,14 +135,14 @@ const ResetPasswordScreen = ({ navigation, route }: any) => {
                     <Icon 
                       name={showPassword ? "eye-off" : "eye"} 
                       size={20} 
-                      color="#A0AEC0" 
+                      color="#164860" 
                       style={styles.visibilityIcon}
                     />
                   </TouchableOpacity>
                 </View>
                 
                 <View style={styles.inputWrapper}>
-                  <Icon name="lock" size={20} color="#A0AEC0" style={styles.inputIcon} />
+                  <Icon name="lock" size={20} color="#164860" style={styles.inputIcon} />
                   <TextInput
                     style={styles.input}
                     placeholder="Confirm new password"
@@ -156,7 +156,7 @@ const ResetPasswordScreen = ({ navigation, route }: any) => {
                     <Icon 
                       name={showConfirmPassword ? "eye-off" : "eye"} 
                       size={20} 
-                      color="#A0AEC0" 
+                      color="#164860" 
                       style={styles.visibilityIcon}
                     />
                   </TouchableOpacity>
