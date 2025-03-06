@@ -1,7 +1,17 @@
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function WelcomeScreen({navigation}) {
+// Define the type for navigation
+type WelcomeScreenNavigationProp = StackNavigationProp<any>;
+
+interface WelcomeScreenProps {
+  navigation:WelcomeScreenNavigationProp;
+} 
+
+const WelcomeScreen:React.FC<WelcomeScreenProps> = ({navigation}) => {
+
         return (
           <SafeAreaView style={styles.container}>
             <View style={styles.contentContainer}>
@@ -12,42 +22,46 @@ export default function WelcomeScreen({navigation}) {
                       />
               </View>
               <Text style={styles.welcomeText}>Welcome!</Text>
+
               <TouchableOpacity 
                 style={[styles.button, styles.createAccountButton]}
-                onPress={() => navigation.navigate('SignUp')}
+                onPress={() => navigation.navigate('Signup')}
               >
                 <Text style={styles.buttonTextWhite}
-                 onPress={() => navigation.navigate('SignUp')}
                 >Create Account</Text>
               </TouchableOpacity>
+
               <TouchableOpacity 
                 style={[styles.button, styles.loginButton]}
                 onPress={() => navigation.navigate('Login')}
               >
                 <Text style={styles.buttonTextPurple}>Login</Text>
               </TouchableOpacity>
-              <View style={styles.socialButtonsContainer}>
-                {/* <TouchableOpacity style={styles.socialButton}>
-                  <Text>🌐</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.socialButton}>
-                  <Text>in</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.socialButton}>
-                  <Text>f</Text>
-                </TouchableOpacity> */}
-                <TouchableOpacity style={styles.socialButton}>
-                  <Image
-                         source={require('../assets/google-color.png')} // Replace with your splash logo
-                         style={styles.Glogo}
-                       />
-                </TouchableOpacity>
+
+              {/* OR separator */}
+              <View style={styles.orContainer}>
+                <View style={styles.orLine} />
+                <Text style={styles.orText}>or</Text>
+                <View style={styles.orLine} />
               </View>
-              <Text style={styles.signInText}>Sign in with another account</Text>
+
+            <TouchableOpacity style={[styles.signInButton,styles.gloginbutton]}>
+              <View style={styles.signInContent}>
+                <Image 
+                  source={require('../assets/google-color.png')}
+                  style={styles.Glogo}
+                />
+                <Text style={styles.buttonTextBlack}>Sign in with another account</Text>
+              </View>
+            </TouchableOpacity>
+
+                {/*  */}
             </View>
           </SafeAreaView>
         );
       };
+
+export default WelcomeScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -66,7 +80,7 @@ const styles = StyleSheet.create({
       logoText: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#164860',
+        color: '#6c63ff',
       },
       logo: {
         width: 350,
@@ -74,12 +88,9 @@ const styles = StyleSheet.create({
         marginBottom: 20,
       },
       Glogo: {
-        width: 35,
-        height: 10,
-        marginBottom: 0,
-        flex:1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        width: 24,
+        height: 24,
+        marginRight: 10, // Creates spacing between the logo and text
       },
       welcomeText: {
         fontSize: 24,
@@ -111,6 +122,11 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
       },
+      buttonTextBlack: {
+        color: '#000000',
+        fontWeight: 'bold',
+      },
+      
       buttonTextPurple: {
         color: '#164860',
         fontWeight: 'bold',
@@ -169,4 +185,51 @@ const styles = StyleSheet.create({
         color: '#6c63ff',
         fontWeight: 'bold',
       },
+
+      signInButton: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        backgroundColor: "#ffffff",
+        padding: 15,
+        borderRadius: 10,
+        justifyContent: 'center',
+        marginTop: 23,
+        
+      },
+      
+      signInContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+      },
+
+      orContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 13, // Space between buttons
+      },
+      
+      orLine: {
+        flex: 1,
+        height: 1.2,
+        backgroundColor: '#ccc',
+        marginHorizontal: 15,
+      },
+      
+      orText: {
+        color: '#666',
+        fontWeight: 'bold',
+      },
+      gloginbutton:{
+        borderWidth: 0.5,
+        borderColor: '#000000'
+      }
+         
+   
 });
+
+
+
+
+
+
