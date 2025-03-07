@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   basketButton: {
     backgroundColor: 'white',
-    paddingHorizontal: 12,
+    paddingHorizontal: 2,
     paddingVertical: 8,
     borderRadius: 6,
     borderWidth: 1,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   basketButtonText: {
     color: '#164860',
-    fontWeight: '600',
+    fontWeight: '800',
     fontSize: 14,
     textAlign: 'center',
   },
