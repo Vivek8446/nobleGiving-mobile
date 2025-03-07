@@ -16,15 +16,15 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
-        <Stack.Screen name="Home" component={HomeScreen} options={{headerShown:true}} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{headerShown:false}} />
         <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{headerShown: false}}/>
         <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}} />
         <Stack.Screen name="Signup" component={SignupScreen} options={{headerShown: false}} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{headerShown: false}} />
         {/* <Stack.Screen name="verifyOTP" component={OtpVerification} options={{headerShown: false}} /> */}
-          <Stack.Screen 
-            name="verifyOTP" 
+          <Stack.Screen
+            name="verifyOTP"
             options={{ headerShown: false }}
           >
             {props => <OtpVerification {...props} onVerificationSuccess={() => props.navigation.navigate('Home')} onBackPress={() => props.navigation.goBack()} />}

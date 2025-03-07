@@ -85,20 +85,14 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
           <ImageBackground 
             source={require('../assets/bg-1.png')}
             style={styles.backgroundImage}
-          > 
-                {/* <ScrollView 
-                  contentContainerStyle={styles.scrollViewContent}
-                  bounces={true}
-                  showsVerticalScrollIndicator={true}
-                  scrollEnabled={true}
-                > */}
-                <ScrollView 
+          >
+                <ScrollView
                   contentContainerStyle={styles.scrollViewContent}
                      keyboardShouldPersistTaps="handled"
                   showsVerticalScrollIndicator={false}
                 >
           <SafeAreaView style={styles.container}>
-            <KeyboardAvoidingView 
+            <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
               style={styles.contentContainer}
             >
@@ -156,7 +150,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
                         onPress={()=> handleSubmit()}
                         // disabled={!isValid}
                       >
-                      {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.buttonTextWhite} >Login</Text>}
+                      {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonTextWhite} >Login</Text>}
                       </TouchableOpacity>
               </View>
             )}
@@ -170,7 +164,7 @@ const LoginScreen:React.FC<LoginScreenProps> = ({navigation}) => {
               </View>
                 <TouchableOpacity style={[styles.signInButton,styles.gloginbutton]}>
                   <View style={styles.signInContent}>
-                      <Image 
+                      <Image
                         source={require('../assets/google-color.png')}
                         style={styles.Glogo}
                       />
@@ -304,9 +298,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   signInButton: {
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    backgroundColor: "#ffffff",
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
     padding: 11,
     borderRadius: 10,
     justifyContent: 'center',
@@ -314,7 +308,7 @@ const styles = StyleSheet.create({
   },
   gloginbutton:{
     borderWidth: 0.5,
-    borderColor: '#000000'
+    borderColor: '#000000',
   },
   signInContent: {
     flexDirection: 'row',
@@ -325,7 +319,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   termsLink: {
-    color: '#0D2847',
+    color: '#164860',
     textDecorationLine: 'underline',
   },
   keyboardAvoidView: {
