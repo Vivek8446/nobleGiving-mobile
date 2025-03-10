@@ -5,6 +5,7 @@ import api from "./apiClient";
 const baseURL = api.defaults.baseURL || 'https://noblegivingbackend.azurewebsites.net/';
 
 const EndPoint = {
+    // Auth endpoints
     login: 'doner/auth/login',
     signUp: 'doner/auth/signup',
     get_user: 'user/profile',
