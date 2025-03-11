@@ -297,6 +297,13 @@ const NGOScreen = () => {
                 <MaterialCommunityIcons name="chevron-down" size={20} color="#164860" />
               </TouchableOpacity>
             </View>
+            <View style={styles.filterItem}>
+              <Text style={styles.filterLabel}>Sort by</Text>
+              <TouchableOpacity style={styles.dropdownButton}>
+                <Text style={styles.dropdownText}>Rating</Text>
+                <MaterialCommunityIcons name="chevron-down" size={20} color="#164860" />
+              </TouchableOpacity>
+            </View>
             
             <TouchableOpacity style={styles.mapSearchButton}>
               <Feather name="map-pin" size={16} color="#fff" />
