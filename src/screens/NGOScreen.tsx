@@ -190,7 +190,7 @@ const NGOScreen = () => {
     <View style={styles.container}>
       <Header />
       
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
         <View style={styles.titleRow}>
           <Text style={styles.title}>NGO Partners</Text>
           <TouchableOpacity style={styles.filterButton}>

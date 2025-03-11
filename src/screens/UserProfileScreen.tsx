@@ -93,6 +93,7 @@ const UserProfileScreen = () => {
             colors={['#1E6B91', '#2988B5']}
           />
         }
+        contentContainerStyle={{ paddingBottom: 70 }}
       >
         <LinearGradient
           colors={['#1E6B91', '#2988B5']}
