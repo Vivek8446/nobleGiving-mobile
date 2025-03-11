@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Dimensions, Modal, Animated } from 'react-native';
 import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,30 +10,36 @@ const { width } = Dimensions.get('window');
 
 const UserProfileScreen = () => {
   const navigation = useNavigation();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [scaleAnim] = useState(new Animated.Value(0));
+
+  const handleLogoutPress = () => {
+    setShowLogoutModal(true);
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      tension: 50,
+      friction: 7
+    }).start();
+  };
+
+  const handleCloseModal = () => {
+    Animated.timing(scaleAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true
+    }).start(() => setShowLogoutModal(false));
+  };
 
   const handleLogout = () => {
-    Alert.alert(
-      'Log out of NobleGiving',
-      '',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Log Out',
-          style: 'destructive',
-          onPress: () => {
-            AsyncStorage.removeItem('userToken');
-            AsyncStorage.removeItem('userData');
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Login' as never }],
-            });
-          },
-        },
-      ],
-    );
+    setShowLogoutModal(false);
+    scaleAnim.setValue(0);
+    AsyncStorage.removeItem('userToken');
+    AsyncStorage.removeItem('userData');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' as never }],
+    });
   };
 
   return (
@@ -133,7 +139,7 @@ const UserProfileScreen = () => {
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.menuItem, styles.logoutItem]}
-                onPress={handleLogout}
+                onPress={handleLogoutPress}
               >
                 <Icon name="log-out" size={22} color="#FF3B30" />
                 <Text style={[styles.menuText, styles.logoutText]}>Logout</Text>
@@ -142,6 +148,58 @@ const UserProfileScreen = () => {
           </View>
         </View>
       </ScrollView>
+
+      {/* Logout Modal */}
+      <Modal
+        visible={showLogoutModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCloseModal}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={handleCloseModal}
+        >
+          <Animated.View 
+            style={[
+              styles.modalContent,
+              {
+                transform: [
+                  {
+                    scale: scaleAnim
+                  }
+                ]
+              }
+            ]}
+          >
+            <LinearGradient
+              colors={['#164860', '#1E6B91']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.modalHeader}
+            >
+              <Icon name="log-out" size={28} color="#fff" />
+              <Text style={styles.modalTitle}>Log out of NobleGiving</Text>
+            </LinearGradient>
+            <Text style={styles.modalMessage}>Are you sure you want to log out?</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelButton]} 
+                onPress={handleCloseModal}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.logoutButton]} 
+                onPress={handleLogout}
+              >
+                <Text style={styles.logoutButtonText}>Log Out</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
@@ -294,6 +352,68 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: '#FF3B30',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    width: width * 0.85,
+    overflow: 'hidden',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  modalHeader: {
+    padding: 20,
+    alignItems: 'center',
+    gap: 12,
+  },
+  modalTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  modalMessage: {
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButton: {
+    borderRightWidth: 1,
+    borderRightColor: '#eee',
+  },
+  logoutButton: {
+    backgroundColor: '#fff',
+  },
+  cancelButtonText: {
+    color: '#164860',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  logoutButtonText: {
+    color: '#FF3B30',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
