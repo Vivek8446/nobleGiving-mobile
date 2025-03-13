@@ -254,21 +254,24 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: 'relative',
-    height: 220,
+    height: 260,
   },
   bannerImage: {
     width: '100%',
-    height: 180,
+    height: '90%',
+    // objectFit: 'cover',
+    
   },
   overlayContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: -5,
     left: 0,
     right: 0,
     backgroundColor: 'rgba(255,255,255,0.85)',
     padding: 12,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+    zIndex: 2,
   },
   ngoInfoOverlay: {
     marginLeft: 70,
@@ -315,14 +318,12 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#EDF2F7',
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    zIndex: 3,
   },
   logoImage: {
     width: '100%',
@@ -353,15 +354,13 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 10,
   },
   tabButton: {
     flex: 1,
-    paddingVertical: 15,
+    paddingVertical: 11,
     alignItems: 'center',
   },
   activeTab: {
