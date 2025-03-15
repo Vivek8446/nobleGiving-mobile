@@ -10,7 +10,6 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
-  Platform,
 } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -18,7 +17,7 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import api from '../services/apiClient'
+import api from '../services/apiClient';
 import { EndPoint } from '../services/apiServices';
 
 
@@ -69,7 +68,7 @@ const SignupScreen: React.FC = () => {
   const getErrorMessage = (error: any): string => {
     if (error.response) {
       // Server responded with a status code outside of 2xx range
-      return error.response.data?.message || 
+      return error.response.data?.message ||
              `Server error: ${error.response.status} ${error.response.statusText}`;
     } else if (error.request) {
       // Request was made but no response received
@@ -86,7 +85,7 @@ const SignupScreen: React.FC = () => {
   const handleSignup = async (values: SignupFormValues) => {
     setIsLoading(true);
     try {
-      console.log('Attempting signup with:', { 
+      console.log('Attempting signup with:', {
         name: values.name,
         email: values.email,
         phone: values.phone,
@@ -103,7 +102,6 @@ const SignupScreen: React.FC = () => {
       navigation.navigate('Login' as never);
     } catch (error) {
       console.error('Signup error:', error);
-      
       // Log detailed error information
       if (axios.isAxiosError(error)) {
         console.error('Error details:', {
@@ -112,11 +110,10 @@ const SignupScreen: React.FC = () => {
           request: error.request ? 'Present' : 'Absent',
           response: error.response ? {
             status: error.response.status,
-            data: error.response.data
-          } : 'Absent'
+            data: error.response.data,
+          } : 'Absent',
         });
       }
-      
       const errorMessage = getErrorMessage(error);
       Alert.alert('Signup Failed', errorMessage);
     } finally {

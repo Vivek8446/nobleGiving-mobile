@@ -1,16 +1,43 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack'; 
+import { StackNavigationProp } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import axios from 'axios';
 
 // Define the type for navigation
 type WelcomeScreenNavigationProp = StackNavigationProp<any>;
 
 interface WelcomeScreenProps {
   navigation:WelcomeScreenNavigationProp;
-} 
+}
+
+GoogleSignin.configure({
+  webClientId: '403939934809-uausboea2etnopvci0l6hohvcqtp2l2e.apps.googleusercontent.com', // Found in Google Cloud Console
+  offlineAccess: true, // Get refresh token
+  forceCodeForRefreshToken: true, // Only works if you added webClientId
+});
+
 
 const WelcomeScreen:React.FC<WelcomeScreenProps> = ({navigation}) => {
+
+  const signInWithGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log('User Info:', userInfo);
+      if (!userInfo.idToken) {
+        throw new Error("No ID Token found in Google Sign-In response");
+      }
+      const idToken = userInfo.idToken; // ✅ Extract idToken properly
+      await AsyncStorage.setItem('user', JSON.stringify(userInfo));
+      // Send token to backend
+      const response = await axios.post('https://noblegivingbackend.azurewebsites.net/auth/google', { idToken });
+      console.log('Backend Response:', response.data);
+    } catch (error) {
+      console.error('Google Sign-In Error:', error);
+    }
+  };
 
         return (
           <SafeAreaView style={styles.container}>
@@ -45,7 +72,10 @@ const WelcomeScreen:React.FC<WelcomeScreenProps> = ({navigation}) => {
                 <View style={styles.orLine} />
               </View>
 
-            <TouchableOpacity style={[styles.signInButton,styles.gloginbutton]}>
+            <TouchableOpacity 
+            style={[styles.signInButton,styles.gloginbutton]}
+            onPress={signInWithGoogle}
+            >
               <View style={styles.signInContent}>
                 <Image 
                   source={require('../assets/google-color.png')}
@@ -193,15 +223,12 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 10,
         justifyContent: 'center',
-        marginTop: 23,
-        
-      },
-      
+        marginTop: 23,   
+      },     
       signInContent: {
         flexDirection: 'row',
         alignItems: 'center',
       },
-
       orContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -224,8 +251,6 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: '#000000'
       }
-         
-   
 });
 
 
