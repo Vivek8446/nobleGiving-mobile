@@ -1,40 +1,4 @@
-// import React from 'react';
-// import { View, Text, StyleSheet, ScrollView } from 'react-native';
-// import Header from '../components/Header';
-
-// const NGOScreen = () => {
-//   return (
-//     <View style={styles.container}>
-//       <Header />
-//       <ScrollView style={styles.content}>
-//         <Text style={styles.title}>NGO Partners</Text>
-//         {/* NGO list will be added here */}
-//       </ScrollView>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//   },
-//   content: {
-//     flex: 1,
-//     padding: 16,
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     color: '#164860',
-//     marginBottom: 16,
-//   },
-// });
-
-// export default NGOScreen; 
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -44,6 +8,7 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -52,8 +17,16 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { MultiSelect } from 'react-native-element-dropdown';
+import LinearGradient from 'react-native-linear-gradient';
 import Header from '../components/Header';
 import { apiService } from '../services/apiServices';
+
+// App colors
+const COLORS = {
+  primary: '#164860',
+  secondary: '#00BFA6',
+  placeholder: '#8a9caa',
+};
 
 // Sample data based on the images
 const CATEGORIES = [
@@ -63,6 +36,12 @@ const CATEGORIES = [
   { id: '4', name: 'Disaster Relief', selected: false },
   { id: '5', name: 'Children', selected: false },
   { id: '6', name: 'Women Empowerment', selected: false },
+];
+
+// Search placeholder options that will cycle
+const SEARCH_PLACEHOLDERS = [
+  'Search by "NGO Name"',
+  'Search by "NGO ID"',
 ];
 
 // Fallback data in case API fails
@@ -243,13 +222,38 @@ const NGOCard = ({ ngo }: { ngo: any }) => {
   );
 };
 
+// Custom placeholder component to render highlighted text
+const renderPlaceholder = (placeholder: string) => {
+  // Split the text by the quoted part
+  const parts = placeholder.split(/"([^"]*)"/)
+  
+  if (parts.length === 3) {
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <Text style={{ color: COLORS.placeholder }}>{parts[0]}</Text>
+        <Text style={{ 
+          color: COLORS.placeholder,
+          fontWeight: 'bold',
+        }}>"{parts[1]}"</Text>
+      </View>
+    )
+  }
+  
+  return <Text style={{ color: COLORS.placeholder }}>{placeholder}</Text>
+}
+
 const NGOScreen = () => {
+  const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
   const [categories, setCategories] = useState(CATEGORIES);
   const [showFilters, setShowFilters] = useState(false);
   const [ngoData, setNgoData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Add state for placeholder text
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [searchPlaceholder, setSearchPlaceholder] = useState(SEARCH_PLACEHOLDERS[0]);
   
   // Add state for dropdown menus
   const [showStateDropdown, setShowStateDropdown] = useState(false);
@@ -288,6 +292,19 @@ const NGOScreen = () => {
   
   useEffect(() => {
     fetchNGOs();
+  }, []);
+  
+  // Add useEffect for cycling placeholders
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prevIndex) => {
+        const newIndex = (prevIndex + 1) % SEARCH_PLACEHOLDERS.length;
+        setSearchPlaceholder(SEARCH_PLACEHOLDERS[newIndex]);
+        return newIndex;
+      });
+    }, 2900); // Change placeholder every 3 seconds
+
+    return () => clearInterval(interval); // Clean up on unmount
   }, []);
 
   const fetchNGOs = async () => {
@@ -466,6 +483,8 @@ const NGOScreen = () => {
       const ngoState = ngo.ngo_state || ngo.state || '';
       const ngoCity = ngo.ngo_city || ngo.city || '';
       const ngoCategories = ngo.ngo_category || ngo.categories || [];
+      const ngoName = ngo.ngo_name || ngo.name || '';
+      const ngoId = ngo.ngo_id || ngo.id_code || '';
       
       // Filter by state
       if (selectedState !== 'All States' && ngoState !== selectedState) {
@@ -489,9 +508,13 @@ const NGOScreen = () => {
       }
       
       // Filter by search text
-      if (searchText && !ngo.ngo_name?.toLowerCase().includes(searchText.toLowerCase()) && 
-          !ngo.name?.toLowerCase().includes(searchText.toLowerCase())) {
-        return false;
+      if (searchText) {
+        const searchLower = searchText.toLowerCase();
+        // Search in both name and ID fields
+        if (!ngoName.toLowerCase().includes(searchLower) && 
+            !ngoId.toLowerCase().includes(searchLower)) {
+          return false;
+        }
       }
       
       return true;
@@ -507,6 +530,16 @@ const NGOScreen = () => {
         return nameA.localeCompare(nameB); // Sort by name (ascending)
       }
       return 0;
+    });
+  };
+
+  // Handle map button press
+  const handleMapPress = () => {
+    // Navigate to map screen with filtered NGOs data
+    // @ts-ignore - Ignoring type error for navigation
+    navigation.navigate('MapScreen', { 
+      ngos: getFilteredNGOs(),
+      title: 'NGO Locations'
     });
   };
 
@@ -530,16 +563,30 @@ const NGOScreen = () => {
         
         <View style={styles.searchRow}>
           <View style={styles.searchContainer}>
-            <Feather name="search" size={20} color="#999" style={styles.searchIcon} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search NGOs"
-              value={searchText}
-              onChangeText={setSearchText}
-            />
+            <LinearGradient
+              colors={['#f8f9fa', '#ffffff']}
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.searchGradient}
+            >
+              <Feather name="search" size={20} color={COLORS.primary} style={styles.searchIcon} />
+              <View style={{ flex: 1, position: 'relative' }}>
+                {searchText === '' && (
+                  <View style={styles.placeholderContainer} pointerEvents="none">
+                    {renderPlaceholder(searchPlaceholder)}
+                  </View>
+                )}
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder=""
+                  value={searchText}
+                  onChangeText={setSearchText}
+                />
+              </View>
+            </LinearGradient>
           </View>
           
-          <TouchableOpacity style={styles.mapButton}>
+          <TouchableOpacity style={styles.mapButton} onPress={handleMapPress}>
             <Feather name="map-pin" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -751,26 +798,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 10,
-    paddingHorizontal: 12,
+    borderRadius: 12,
     height: 50,
     flex: 1,
     marginRight: 10,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#e6f0f6',
+    overflow: 'hidden',
+  },
+  searchGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    paddingHorizontal: 15,
   },
   searchIcon: {
-    marginRight: 10,
+    padding: 5,
   },
   searchInput: {
     flex: 1,
     height: 50,
-    fontSize: 16,
-    color: '#333',
+    fontSize: 15,
+    color: COLORS.primary,
+    fontWeight: '500',
   },
   featuredContainer: {
     marginBottom: 20,
@@ -966,12 +1028,17 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
   },
   mapButton: {
-    backgroundColor: '#164860',
-    borderRadius: 8,
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   filterContainer: {
     backgroundColor: '#fff',
@@ -1135,6 +1202,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: 8,
+  },
+  placeholderContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    zIndex: 1,
+    paddingLeft: 0,
   },
 });
 
