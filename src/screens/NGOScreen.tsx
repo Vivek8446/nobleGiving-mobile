@@ -242,6 +242,37 @@ const renderPlaceholder = (placeholder: string) => {
   return <Text style={{ color: COLORS.placeholder }}>{placeholder}</Text>
 }
 
+// Animated pattern dot component
+const PatternDot = ({ style }: { style: any }) => {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 1.2,
+          duration: 2000 + Math.random() * 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 2000 + Math.random() * 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+  
+  return (
+    <Animated.View 
+      style={[
+        style, 
+        { transform: [{ scale: scaleAnim }] }
+      ]} 
+    />
+  );
+};
+
 const NGOScreen = () => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
@@ -290,6 +321,30 @@ const NGOScreen = () => {
   // Sort options - explicitly set Rating first, Name second
   const sortOptions = ['Rating', 'Name'];
   
+  // Add animation value for filter button
+  const filterButtonScale = useRef(new Animated.Value(1)).current;
+  
+  // Add animation for title icon
+  const titleIconAnim = useRef(new Animated.Value(1)).current;
+  
+  // Animate title icon on component mount
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(titleIconAnim, {
+          toValue: 1.2,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(titleIconAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
   useEffect(() => {
     fetchNGOs();
   }, []);
@@ -302,7 +357,7 @@ const NGOScreen = () => {
         setSearchPlaceholder(SEARCH_PLACEHOLDERS[newIndex]);
         return newIndex;
       });
-    }, 2900); // Change placeholder every 3 seconds
+    }, 4500); // Change placeholder every 3 seconds
 
     return () => clearInterval(interval); // Clean up on unmount
   }, []);
@@ -352,7 +407,32 @@ const NGOScreen = () => {
     );
   };
 
+  // Calculate active filter count
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (selectedState !== 'All States') count++;
+    if (selectedCity !== 'All Cities') count++;
+    count += selectedCategories.length;
+    return count;
+  };
+
+  // Toggle filters with animation
   const toggleFilters = () => {
+    // Animate button press
+    Animated.sequence([
+      Animated.timing(filterButtonScale, {
+        toValue: 0.9,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(filterButtonScale, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    
+    // Toggle filters state
     setShowFilters(!showFilters);
   };
   
@@ -549,16 +629,43 @@ const NGOScreen = () => {
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>NGO Partners</Text>
-          <TouchableOpacity 
-            style={[
-              styles.filterButton, 
-              showFilters && { backgroundColor: '#164860' }
-            ]} 
-            onPress={toggleFilters}
-          >
-            <Feather name="filter" size={18} color={showFilters ? '#fff' : '#164860'} />
-          </TouchableOpacity>
+          <View style={styles.patternOverlay}>
+            {/* Create a pattern with multiple dots */}
+            {Array(10).fill(0).map((_, i) => (
+              <PatternDot key={i} style={[styles.patternDot, { 
+                top: Math.random() * 100, 
+                left: Math.random() * 100,
+                width: 8 + Math.random() * 12,
+                height: 8 + Math.random() * 12,
+                opacity: 0.1 + Math.random() * 0.3
+              }]} />
+            ))}
+          </View>
+          <View style={styles.titleContainer}>
+            <View style={styles.titleWithIcon}>
+              <Animated.View style={[styles.titleIcon, { transform: [{ scale: titleIconAnim }] }]}>
+                <Feather name="heart" size={20} color="#00BFA6" />
+              </Animated.View>
+              <Text style={styles.title}>NGO Partners</Text>
+            </View>
+            <Text style={styles.subtitle}>Find and support verified organizations</Text>
+          </View>
+          <Animated.View style={{ transform: [{ scale: filterButtonScale }] }}>
+            <TouchableOpacity 
+              style={[
+                styles.filterButton, 
+                showFilters && styles.filterButtonActive
+              ]} 
+              onPress={toggleFilters}
+            >
+              <Feather name="filter" size={18} color={showFilters ? '#fff' : '#164860'} />
+              {getActiveFilterCount() > 0 && (
+                <View style={styles.filterBadge}>
+                  <Text style={styles.filterBadgeText}>{getActiveFilterCount()}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </Animated.View>
         </View>
         
         <View style={styles.searchRow}>
@@ -689,7 +796,10 @@ const NGOScreen = () => {
         )}
         
         <View style={styles.featuredContainer}>
-          <Text style={styles.sectionTitle}>Featured NGOs</Text>
+          <View style={styles.modernSectionTitleContainer}>
+            <View style={styles.sectionTitleAccent} />
+            <Text style={styles.sectionTitle}>Featured NGOs</Text>
+          </View>
           
           <View style={styles.featuredCard}>
             <Image 
@@ -717,7 +827,10 @@ const NGOScreen = () => {
         </View>
         
         <View style={styles.allNGOsContainer}>
-          <Text style={styles.sectionTitle}>All NGOs</Text>
+          <View style={styles.modernSectionTitleContainer}>
+            <View style={styles.sectionTitleAccent} />
+            <Text style={styles.sectionTitle}>All NGOs</Text>
+          </View>
           
           {loading ? (
             <View style={styles.loadingContainer}>
@@ -770,7 +883,7 @@ const NGOScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f0f7ff',
   },
   content: {
     flex: 1,
@@ -780,19 +893,57 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
+    backgroundColor: '#f0f7ff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: 'rgba(22, 72, 96, 0.1)',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e6f0f6',
+    borderLeftWidth: 4,
+    borderLeftColor: '#00BFA6',
+    borderBottomWidth: 2,
+    borderBottomColor: '#e6f0f6',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  titleContainer: {
+    flexDirection: 'column',
+    zIndex: 1,
+  },
+  titleWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  titleIcon: {
+    marginRight: 8,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#164860',
+    letterSpacing: 0.5,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
   },
   filterButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#e0e0e0',
+    padding: 10,
+    borderRadius: 12,
+    backgroundColor: '#f0f7ff',
     borderWidth: 1,
-    borderColor: '#164860',
+    borderColor: '#e6f0f6',
+    shadowColor: 'rgba(22, 72, 96, 0.1)',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2,
   },
   searchRow: {
     flexDirection: 'row',
@@ -838,20 +989,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
+    color: '#164860',
+    letterSpacing: 0.5,
   },
   featuredCard: {
     borderRadius: 10,
     overflow: 'hidden',
-    backgroundColor: '#fff',
-    shadowColor: '#000',
+    backgroundColor: 'transparent',
+    shadowColor: 'rgba(22, 72, 96, 0.15)',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e6f0f6',
   },
   featuredImage: {
     width: '100%',
@@ -859,6 +1012,9 @@ const styles = StyleSheet.create({
   },
   featuredOverlay: {
     padding: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   featuredTitle: {
     fontSize: 18,
@@ -899,18 +1055,18 @@ const styles = StyleSheet.create({
   cardTouchable: {
     marginBottom: 16,
     borderRadius: 12,
-    shadowColor: '#000',
+    shadowColor: 'rgba(22, 72, 96, 0.15)',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
   },
   ngoCard: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: '#e6f0f6',
   },
   cardImageContainer: {
     position: 'relative',
@@ -933,7 +1089,7 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
   },
@@ -1083,6 +1239,10 @@ const styles = StyleSheet.create({
   loadingContainer: {
     padding: 20,
     alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(230, 240, 246, 0.8)',
   },
   loadingText: {
     marginTop: 10,
@@ -1092,8 +1252,10 @@ const styles = StyleSheet.create({
   errorContainer: {
     padding: 20,
     alignItems: 'center',
-    backgroundColor: '#ffeeee',
+    backgroundColor: 'rgba(255, 238, 238, 0.7)',
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(204, 0, 0, 0.1)',
   },
   errorText: {
     color: '#cc0000',
@@ -1102,6 +1264,10 @@ const styles = StyleSheet.create({
   emptyContainer: {
     padding: 20,
     alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(230, 240, 246, 0.8)',
   },
   emptyText: {
     color: '#666',
@@ -1212,6 +1378,79 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 1,
     paddingLeft: 0,
+  },
+  filterButtonActive: {
+    backgroundColor: '#164860',
+  },
+  filterBadge: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    backgroundColor: '#cc0000',
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#fff',
+  },
+  filterBadgeText: {
+    fontSize: 10,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  patternOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0.05,
+    zIndex: 0,
+    borderRadius: 16,
+    overflow: 'hidden',
+    backgroundColor: '#164860',
+  },
+  patternDot: {
+    position: 'absolute',
+    borderRadius: 20,
+    backgroundColor: '#00BFA6',
+  },
+  modernSectionTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: 8,
+    paddingHorizontal: 4,
+  },
+  sectionTitleAccent: {
+    width: 4,
+    height: 26,
+    backgroundColor: '#00BFA6',
+    borderRadius: 2,
+    marginRight: 12,
+    shadowColor: '#00BFA6',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  sectionTitleBadge: {
+    backgroundColor: '#f0f7ff',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginLeft: 10,
+    borderWidth: 1,
+    borderColor: '#e6f0f6',
+  },
+  sectionTitleBadgeText: {
+    fontSize: 12,
+    color: '#164860',
+    fontWeight: '500',
   },
 });
 
