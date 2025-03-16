@@ -21,6 +21,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiService } from '../services/apiServices';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
   const navigation = useNavigation();
@@ -37,9 +38,64 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
   const [ngoData, setNgoData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isInBasket, setIsInBasket] = useState(false);
+  
+  // Add a function to handle adding/removing from basket
+  const handleBasketAction = async () => {
+    try {
+      // Get current basket items
+      const basketData = await AsyncStorage.getItem('basketItems');
+      let basketItems = basketData ? JSON.parse(basketData) : [];
+      
+      if (isInBasket) {
+        // Remove from basket
+        basketItems = basketItems.filter((item: any) => item.id !== ngoIdToUse);
+        setIsInBasket(false);
+      } else {
+        // Add to basket
+        const ngoForBasket = {
+          id: ngoIdToUse,
+          ngo_name: ngoData?.ngo_name || 'Samarthya Kalyankari Sanstha',
+          ngo_profile_photo: ngoData?.ngo_profile_photo || 'https://res.cloudinary.com/dpyficcwm/image/upload/v1741847678/samarthya_opy14x.jpg',
+          ngo_category: ngoData?.ngo_category || ['Children'],
+          ngo_established: ngoData?.ngo_established || '2008',
+          ngo_id: ngoData?.ngo_id || 'MH-2017-0164886',
+          rating: ngoData?.rating || '4.5'
+        };
+        
+        // Check if already in basket
+        const existingIndex = basketItems.findIndex((item: any) => item.id === ngoIdToUse);
+        if (existingIndex === -1) {
+          basketItems.push(ngoForBasket);
+        }
+        
+        setIsInBasket(true);
+      }
+      
+      // Save updated basket
+      await AsyncStorage.setItem('basketItems', JSON.stringify(basketItems));
+    } catch (error) {
+      console.error('Error updating basket:', error);
+    }
+  };
+  
+  // Check if NGO is in basket when component loads
+  const checkIfInBasket = async () => {
+    try {
+      const basketData = await AsyncStorage.getItem('basketItems');
+      if (basketData) {
+        const basketItems = JSON.parse(basketData);
+        const isInBasket = basketItems.some((item: any) => item.id === ngoIdToUse);
+        setIsInBasket(isInBasket);
+      }
+    } catch (error) {
+      console.error('Error checking basket:', error);
+    }
+  };
   
   useEffect(() => {
     fetchNGOData();
+    checkIfInBasket();
   }, [ngoIdToUse]); // Refetch when ngoId changes
   
   const fetchNGOData = async () => {
@@ -233,10 +289,18 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
             <Text style={styles.ratingText}> ({ngoData?.rating || '4.5'})</Text>
           </View>
           
-          <TouchableOpacity style={styles.basketButton}>
+          <TouchableOpacity 
+            style={styles.basketButton}
+            onPress={handleBasketAction}
+          >
             <View style={styles.basketButtonContent}>
-              <MaterialCommunityIcons name="basket-plus" size={18} color="#fff" style={styles.buttonIcon} />
-              <Text style={styles.basketButtonText}>Add to Basket</Text>
+              <Image 
+                source={require('../assets/enahnced-basket.png')}
+                style={{width: 15, height: 18, ...styles.buttonIcon}} 
+              />
+              <Text style={styles.basketButtonText}>
+                {isInBasket ? 'Remove from Basket' : 'Add to Basket'}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -448,6 +512,25 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
     }
   };
   
+  // Add a function to handle donation
+  const handleDonation = async () => {
+    try {
+      // First add to basket
+      await handleBasketAction();
+      
+      // Then navigate with timestamp to force re-render
+      navigation.navigate({
+        name: 'BasketScreen',
+        params: { refresh: new Date().getTime() },
+        merge: true,
+      } as never);
+      
+      console.log('Navigated to BasketScreen with refresh param:', new Date().getTime());
+    } catch (error) {
+      console.error('Error during donation process:', error);
+    }
+  };
+  
   if (loading) {
     return (
       <SafeAreaView style={[styles.container, styles.loadingContainer]}>
@@ -501,7 +584,7 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
               transform: thirdButtonStyle.transform,
               opacity: menuAnimation
             }]}>
-              <TouchableOpacity style={actionButton}>
+              <TouchableOpacity style={actionButton} onPress={handleDonation}>
                 <MaterialCommunityIcons name="heart-outline" size={18} color="#fff" style={styles.buttonIcon} />
                 
                 <Text style={[actionButtonText, { color: '#fff' }]}>Donate</Text>
@@ -870,9 +953,9 @@ const styles = StyleSheet.create({
     bottom: 20,
   },
   basketButton: {
-    backgroundColor: '#00BFA6',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    backgroundColor: '#00e5c945',
+    paddingHorizontal: 13,
+    paddingVertical: 8,
     borderRadius: 100,
     elevation: 5,
     shadowColor: '#00BFA6',
@@ -886,7 +969,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   basketButtonText: {
-    color: 'white',
+    color: '#164860',
+    opacity: 0.9,
     fontWeight: 'bold',
     fontSize: 12,
   },

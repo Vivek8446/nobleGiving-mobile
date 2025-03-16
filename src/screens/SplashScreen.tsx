@@ -109,11 +109,11 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 14,
+    marginBottom: 26,
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
   },
   textContainer: {
     alignItems: 'center',
