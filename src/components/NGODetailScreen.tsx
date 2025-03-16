@@ -13,11 +13,12 @@ import {
   Animated,
   ViewStyle,
   TextStyle,
-  PanResponder,
   ActivityIndicator,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiService } from '../services/apiServices';
 
@@ -30,7 +31,6 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
   
   const [activeTab, setActiveTab] = useState('about');
   const [isExpanded, setIsExpanded] = useState(false);
-  const [fabPosition, setFabPosition] = useState({ x: Dimensions.get('window').width - 73, y: 275 });
   const menuAnimation = useRef(new Animated.Value(0)).current;
   
   // Add state for API data
@@ -56,40 +56,6 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
     }
   };
   
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (_, gesture) => {
-        // Store initial position
-        setFabPosition(prev => ({
-          x: prev.x + gesture.x0,
-          y: prev.y + gesture.y0
-        }));
-      },
-      onPanResponderMove: (_, gesture) => {
-        const { width, height } = Dimensions.get('window');
-        const fabSize = 53;
-        
-        // Calculate new position
-        const newX = Math.max(0, Math.min(width - fabSize, gesture.moveX));
-        const newY = Math.max(0, Math.min(height - fabSize, gesture.moveY));
-        
-        setFabPosition({ x: newX, y: newY });
-      },
-      onPanResponderRelease: (_, gesture) => {
-        const { width, height } = Dimensions.get('window');
-        const fabSize = 53;
-        
-        // Calculate final position
-        const finalX = Math.max(0, Math.min(width - fabSize, gesture.moveX));
-        const finalY = Math.max(0, Math.min(height - fabSize, gesture.moveY));
-        
-        setFabPosition({ x: finalX, y: finalY });
-      },
-    })
-  ).current;
-
   const toggleMenu = () => {
     const toValue = isExpanded ? 0 : 1;
     Animated.spring(menuAnimation, {
@@ -110,138 +76,60 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
     backgroundColor: '#00BFA6',
     width: 53,
     height: 53,
-    borderRadius: 30,
+    borderRadius: 100,
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
-    elevation: 25,
+    elevation: 4,
     position: 'absolute',
-    left: fabPosition.x,
-    top: fabPosition.y,
+    right: 18,
+    bottom: 18,
     zIndex: 1000,
-  };
-
-  const fabButton: ViewStyle = {
-    position: 'absolute',
-    alignItems: 'center' as const,
-    zIndex: 1,
-    left: fabPosition.x,
-    top: fabPosition.y,
+    shadowColor: '#00BFA6',
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 9,
   };
 
   const getMenuButtonStyles = () => {
-    const { width, height } = Dimensions.get('window');
-    const fabSize = 53;
-    const menuButtonWidth = 120;
-    const menuButtonHeight = 40;
-    const radius = 80; // Reduced radius for the half-circle
+    const verticalSpacing = 65; // Vertical spacing between buttons
     
-    // Calculate if FAB is near edges
-    const isNearRight = fabPosition.x > width - (menuButtonWidth + fabSize + 20);
-    const isNearBottom = fabPosition.y > height - (menuButtonHeight * 3 + fabSize + 20);
-    const isNearTop = fabPosition.y < 150;
-    const isNearLeft = fabPosition.x < 150;
-    
-    // Determine the base angle for the half-circle based on FAB position
-    let baseAngle;
-    
-    if (isNearRight && isNearBottom) {
-      // Bottom-right corner: open to the left and up (180° arc from 90° to 270°)
-      baseAngle = Math.PI * 0.5; // 90°
-    } else if (isNearRight && isNearTop) {
-      // Top-right corner: open to the left and down (180° arc from 180° to 360°)
-      baseAngle = Math.PI * 0.75; // 135° - diagonal down-left
-    } else if (isNearLeft && isNearBottom) {
-      // Bottom-left corner: open to the right and up (180° arc from 270° to 90°)
-      baseAngle = Math.PI * 1.5; // 270°
-    } else if (isNearLeft && isNearTop) {
-      // Top-left corner: open to the right and down (180° arc from 0° to 180°)
-      baseAngle = Math.PI * 0.25; // 45° - diagonal down-right
-    } else if (isNearRight) {
-      // Right edge: open to the left (180° arc from 90° to 270°)
-      baseAngle = Math.PI * 0.5; // 90°
-    } else if (isNearLeft) {
-      // Left edge: open to the right (180° arc from 270° to 90°)
-      baseAngle = Math.PI * 1.5; // 270°
-    } else if (isNearBottom) {
-      // Bottom edge: open upward (180° arc from 0° to 180°)
-      baseAngle = 0; // 0°
-    } else if (isNearTop) {
-      // Top edge: open downward (180° arc from 180° to 360°)
-      baseAngle = Math.PI; // 180°
-    } else {
-      // Default (middle of screen): open to the right (180° arc from 270° to 90°)
-      baseAngle = Math.PI * 1.5; // 270°
-    }
-    
-    // For debugging
-    console.log('Position:', { x: fabPosition.x, y: fabPosition.y });
-    console.log('Near edges:', { right: isNearRight, top: isNearTop, left: isNearLeft, bottom: isNearBottom });
-    console.log('Base angle:', baseAngle);
-    
-    // Calculate angles for each button in the half-circle
-    // For 3 buttons in a 180° arc, we use smaller angle increments to reduce spacing
-    // First button: baseAngle
-    // Second button: baseAngle + 60° (π/3)
-    // Third button: baseAngle + 120° (2π/3)
-    
-    // First button - start of the arc
+    // First button - top position
     const firstButtonStyle = {
       transform: [
         { scale: menuAnimation },
         {
-          translateX: menuAnimation.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, radius * Math.cos(baseAngle)],
-          }),
-        },
-        {
           translateY: menuAnimation.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, radius * Math.sin(baseAngle)],
+            outputRange: [0, -verticalSpacing],
           }),
         },
       ],
-      opacity: menuAnimation,
     };
 
-    // Second button - middle of the arc (60° from start)
+    // Second button - middle position
     const secondButtonStyle = {
       transform: [
         { scale: menuAnimation },
         {
-          translateX: menuAnimation.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, radius * Math.cos(baseAngle + Math.PI/3)],
-          }),
-        },
-        {
           translateY: menuAnimation.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, radius * Math.sin(baseAngle + Math.PI/3)],
+            outputRange: [0, -verticalSpacing * 2],
           }),
         },
       ],
-      opacity: menuAnimation,
     };
 
-    // Third button - end of the arc (120° from start)
+    // Third button - highest position
     const thirdButtonStyle = {
       transform: [
         { scale: menuAnimation },
         {
-          translateX: menuAnimation.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, radius * Math.cos(baseAngle + Math.PI*2/3)],
-          }),
-        },
-        {
           translateY: menuAnimation.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, radius * Math.sin(baseAngle + Math.PI*2/3)],
+            outputRange: [0, -verticalSpacing * 3],
           }),
         },
       ],
-      opacity: menuAnimation,
     };
 
     return { firstButtonStyle, secondButtonStyle, thirdButtonStyle };
@@ -249,10 +137,8 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
 
   const inlineFabContainer: ViewStyle = {
     position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
+    right: 20,
+    bottom: 20,
     pointerEvents: 'box-none',
     zIndex: 999,
   };
@@ -337,13 +223,22 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
             <Text style={styles.categoryText}>#Children</Text>
           )}
         </View>
-        <View style={styles.ratingContainer}>
-          <Icon name="star" size={16} color="#164860" />
-          <Icon name="star" size={16} color="#164860" />
-          <Icon name="star" size={16} color="#164860" />
-          <Icon name="star" size={16} color="#164860" />
-          <Icon name="star-half-o" size={16} color="#164860" />
-          <Text style={styles.ratingText}> ({ngoData?.rating || '4.5'})</Text>
+        <View style={styles.ratingAndBasketContainer}>
+          <View style={styles.ratingContainer}>
+            <Icon name="star" size={16} color="#164860" />
+            <Icon name="star" size={16} color="#164860" />
+            <Icon name="star" size={16} color="#164860" />
+            <Icon name="star" size={16} color="#164860" />
+            <Icon name="star-half-o" size={16} color="#164860" />
+            <Text style={styles.ratingText}> ({ngoData?.rating || '4.5'})</Text>
+          </View>
+          
+          <TouchableOpacity style={styles.basketButton}>
+            <View style={styles.basketButtonContent}>
+              <MaterialCommunityIcons name="basket-plus" size={18} color="#fff" style={styles.buttonIcon} />
+              <Text style={styles.basketButtonText}>Add to Basket</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -496,6 +391,14 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
             <Icon name="facebook" size={24} color="#3b5998" />
           </TouchableOpacity>
         )}
+        {ngoData?.socialMedia?.instagram && (
+          <TouchableOpacity 
+            style={styles.socialIcon}
+            onPress={() => openLink(ngoData.socialMedia.instagram)}
+          >
+            <Icon name="instagram" size={24} color="#C13584" />
+          </TouchableOpacity>
+        )}
         {ngoData?.socialMedia?.linkedin && (
           <TouchableOpacity 
             style={styles.socialIcon}
@@ -576,48 +479,55 @@ const NGODetailScreen = ({ ngoId }: { ngoId?: string }) => {
         </View>
         {renderContent()}
       </ScrollView>
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'box-none' }}>
-        <Animated.View
-          style={[fab]}
-          {...panResponder.panHandlers}
+      
+      {/* FAB Button */}
+      <Animated.View style={[fab]}>
+        <TouchableOpacity 
+          style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}
+          onPress={toggleMenu}
         >
-          <TouchableOpacity 
-            style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}
-            onPress={toggleMenu}
-          >
-            <Animated.View style={{ transform: [{ rotate: rotation }] }}>
-              <Icon name="plus" size={26} color="#fff" />
+          <Animated.View style={{ transform: [{ rotate: rotation }] }}>
+            <MaterialCommunityIcons name="plus" size={33} color="#fff" />
+          </Animated.View>
+        </TouchableOpacity>
+      </Animated.View>
+      
+      {/* Menu Items */}
+      {(() => {
+        const { firstButtonStyle, secondButtonStyle, thirdButtonStyle } = getMenuButtonStyles();
+        return (
+          <>
+            <Animated.View style={[styles.fabMenuButton, { 
+              transform: thirdButtonStyle.transform,
+              opacity: menuAnimation
+            }]}>
+              <TouchableOpacity style={actionButton}>
+                <MaterialCommunityIcons name="heart-outline" size={18} color="#fff" style={styles.buttonIcon} />
+                
+                <Text style={[actionButtonText, { color: '#fff' }]}>Donate</Text>
+              </TouchableOpacity>
             </Animated.View>
-          </TouchableOpacity>
-        </Animated.View>
-        <View style={inlineFabContainer}>
-          {(() => {
-            const { firstButtonStyle, secondButtonStyle, thirdButtonStyle } = getMenuButtonStyles();
-            return (
-              <>
-                <Animated.View style={[fabButton, thirdButtonStyle]}>
-                  <TouchableOpacity style={outlineButton}>
-                    <Icon name="phone" size={16} color="#00BFA6" style={styles.buttonIcon} />
-                    <Text style={[styles.outlineButtonText, { color: '#00BFA6' }]}>Contact</Text>
-                  </TouchableOpacity>
-                </Animated.View>
-                <Animated.View style={[fabButton, secondButtonStyle]}>
-                  <TouchableOpacity style={outlineButton}>
-                    <Icon name="share-alt" size={16} color="#00BFA6" style={styles.buttonIcon} />
-                    <Text style={[styles.outlineButtonText, { color: '#00BFA6' }]}>Share</Text>
-                  </TouchableOpacity>
-                </Animated.View>
-                <Animated.View style={[fabButton, firstButtonStyle]}>
-                  <TouchableOpacity style={actionButton}>
-                    <Icon name="heart" size={16} color="#fff" style={styles.buttonIcon} />
-                    <Text style={[actionButtonText, { color: '#fff' }]}>Donate</Text>
-                  </TouchableOpacity>
-                </Animated.View>
-              </>
-            );
-          })()}
-        </View>
-      </View>
+            <Animated.View style={[styles.fabMenuButton, { 
+              transform: secondButtonStyle.transform,
+              opacity: menuAnimation
+            }]}>
+              <TouchableOpacity style={outlineButton}>
+                <MaterialCommunityIcons name="message-text-outline" size={18} color="#00BFA6" style={styles.buttonIcon} />
+                <Text style={[styles.outlineButtonText, { color: '#00BFA6' }]}>Message</Text>
+              </TouchableOpacity>
+            </Animated.View>
+            <Animated.View style={[styles.fabMenuButton, { 
+              transform: firstButtonStyle.transform,
+              opacity: menuAnimation
+            }]}>
+              <TouchableOpacity style={outlineButton}>
+                <MaterialCommunityIcons name="video-outline" size={18} color="#00BFA6" style={styles.buttonIcon} />
+                <Text style={[styles.outlineButtonText, { color: '#00BFA6' }]}>Video Call</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </>
+        );
+      })()}
     </SafeAreaView>
   );
 };
@@ -695,10 +605,15 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginBottom: 5,
   },
+  ratingAndBasketContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 5,
+  },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 5,
   },
   ratingText: {
     fontSize: 12,
@@ -948,6 +863,32 @@ const styles = StyleSheet.create({
   retryButtonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  fabMenuButton: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+  },
+  basketButton: {
+    backgroundColor: '#00BFA6',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 100,
+    elevation: 5,
+    shadowColor: '#00BFA6',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.5,
+  },
+  basketButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  basketButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
   },
 });
 

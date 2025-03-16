@@ -9,7 +9,7 @@ const Header = ({ }) => {
       {/* App Title */}
       <TouchableOpacity   style={styles.titleContainer}>
       <Image
-      source={require('../assets/logo1.png')} // Replace with your splash logo
+      source={require('../assets/logo1.png')} 
                         style={styles.logoImage} />
       <Text style={styles.title}>NobleGiving</Text>
         </TouchableOpacity>
@@ -22,7 +22,7 @@ const Header = ({ }) => {
 
         <TouchableOpacity style={styles.iconButton}>
         <Image
-      source={require('../assets/basket.png')} // Replace with your splash logo
+      source={require('../assets/basket.png')} 
                         style={styles.basketImage} />
         </TouchableOpacity>
       </View>
