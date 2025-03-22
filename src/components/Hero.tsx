@@ -122,7 +122,7 @@ const Hero = () => {
           if (!isTransitioning) {
             handleNextSlide();
           }
-        }, 4000); // Change slide every 4 seconds
+        }, 3700); // Change slide every 3.7 seconds
       }
     };
     
@@ -346,7 +346,7 @@ const Hero = () => {
   // Dynamic gradient colors based on dark/light mode
   const gradientColors = isDarkMode 
     ? ['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.75)'] 
-    : ['rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)'];
+    : ['rgba(0, 0, 0, 0.4)', 'rgba(0, 0, 0, 0.7)'];
 
   return (
     <View 
@@ -427,8 +427,15 @@ const Hero = () => {
                 accessibilityLabel="Explore NGOs"
                 accessibilityHint="Navigate to explore NGOs page"
               >
-                <Text style={styles.buttonText}>Explore NGOs</Text>
-                <Icon name="arrow-right" size={16} color="#fff" style={styles.buttonIcon} />
+                <LinearGradient
+                  colors={['#164860', '#0d2e3d']}
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 1}}
+                  style={styles.buttonGradient}
+                >
+                  <Text style={styles.buttonText}>Explore NGOs</Text>
+                  <Icon name="arrow-right" size={16} color="#fff" style={styles.buttonIcon} />
+                </LinearGradient>
               </TouchableOpacity>
             </View>
             
@@ -582,24 +589,34 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   button: {
-    backgroundColor: '#164860',
+    backgroundColor: 'transparent',
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(22, 72, 96, 0.7)',
+  },
+  buttonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 8,
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
   },
   buttonText: {
     color: 'white',
-    fontWeight: 'bold',
+    fontWeight: '700',
     fontSize: 16,
     marginRight: 8,
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   buttonIcon: {
     marginLeft: 4,
