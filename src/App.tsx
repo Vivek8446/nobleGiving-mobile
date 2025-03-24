@@ -17,6 +17,8 @@ import SelectScreen from './screens/SelectScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View } from 'react-native';
 import OnboardingSlider from './components/OnboardingSlider';
+import NGORegistration from './screens/NGO/NGORegistration';
+import NGOWelcomeScreen from './screens/NGO/NGOWelcomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -149,6 +151,19 @@ const App = () => {
         <Stack.Screen
           name="MapScreen"
           component={MapScreen}
+          options={{ headerShown: false }}
+        />
+
+
+        {/* NGO screen started here */}
+        <Stack.Screen
+          name="NGOWelcome"
+          component={NGOWelcomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="NGORegistration"
+          component={NGORegistration}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

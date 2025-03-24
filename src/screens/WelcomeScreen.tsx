@@ -48,7 +48,7 @@ const WelcomeScreen:React.FC<WelcomeScreenProps> = ({navigation}) => {
                         style={styles.logo}
                       />
               </View>
-              <Text style={styles.welcomeText}>Welcome!</Text>
+              <Text style={styles.welcomeText}>Welcome! DONER</Text>
 
               <TouchableOpacity 
                 style={[styles.button, styles.createAccountButton]}

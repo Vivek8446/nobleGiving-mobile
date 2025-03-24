@@ -1,79 +1,151 @@
 // import React from 'react';
-// import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
+// import { 
+//   View, 
+//   Text, 
+//   Image, 
+//   StyleSheet, 
+//   TouchableOpacity, 
+//   SafeAreaView, 
+//   Dimensions, 
+//   StatusBar
+// } from 'react-native';
+// import LinearGradient from 'react-native-linear-gradient';
+// // import { useNavigation } from '@react-navigation/native';
+// import { StackNavigationProp } from '@react-navigation/stack';
 
-// const SelectScreen: React.FC = () => {
-//   const navigation = useNavigation();
+// const { width, height } = Dimensions.get('window');
 
+
+
+// type SelectScreenNavigationProp = StackNavigationProp<any>;
+
+// interface SelectScreenProps {
+//   navigation:SelectScreenNavigationProp;
+// }
+
+// const SelectScreen: React.FC<SelectScreenProps> = ({ navigation}) => {
+//   // const navigation = useNavigation();
 //   return (
-//     <View style={styles.container}>
-//       <Image 
-//         source={require('../assets/help.jpg')} // Update the path to your image
-//         style={styles.image} 
-//         resizeMode="contain"
+//     <SafeAreaView style={styles.container}>
+//       {/* Background gradient */}
+//      <StatusBar backgroundColor="#164860" barStyle="light-content" />
+//       <LinearGradient
+//         colors={['#164860', '#164860']}
+//         style={styles.background}
 //       />
-//       <Text style={styles.heading}>Select an option to start</Text>
-//       <TouchableOpacity 
-//         style={styles.button} 
-//         onPress={() => navigation.navigate('Welcome')}
-//       >
-//         <Text style={styles.buttonText}>Start a free fundraiser</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity 
-//         style={styles.button} 
-//         onPress={() => navigation.navigate('Welcome')}
-//       >
-//         <Text style={styles.buttonText}>Make a donation</Text>
-//       </TouchableOpacity>
-//       <Text style={styles.footerText}>
-//         Already have an account?{' '}
-//         <Text 
-//           style={styles.signIn} 
-//           onPress={() => navigation.navigate('SignIn')}
+      
+//       {/* Top circular shape */}
+//       <View style={styles.circleContainer}>
+//         <View style={styles.circle}>
+//           {/* Hearts and jar illustration */}
+//           <Image
+//             source={require('../assets/help.jpg')}
+//             style={styles.illustration}
+//             resizeMode="contain"
+//           />
+//         </View>
+//       </View>
+      
+//       {/* Bottom content */}
+//       <View style={styles.bottomContainer}>
+//         <Text style={styles.headerText}>Select an option to start</Text>
+        
+//         {/* Start a free fundraiser button */}
+//         <TouchableOpacity 
+//           style={styles.button}
+//           onPress={() => navigation.navigate('Welcome')}
 //         >
-//           Sign in
-//         </Text>
-//       </Text>
-//     </View>
+//           <Text style={styles.buttonText}>Start a free fundraiser</Text>
+//         </TouchableOpacity>
+        
+//         <TouchableOpacity 
+//           style={styles.button}
+//           onPress={() => navigation.navigate('Welcome')}
+//         >
+//           <Text style={styles.buttonText}>Make a donation</Text>
+//         </TouchableOpacity>
+        
+//         <View style={styles.signInContainer}>
+//           <Text style={styles.signInText}>Already have an account? </Text>
+//           <TouchableOpacity >
+//             <Text style={styles.signInLink}>Sign in</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </SafeAreaView>
 //   );
 // };
 
 // const styles = StyleSheet.create({
 //   container: {
-//     padding: 20,
+//     flex: 1,
+//     backgroundColor: 'white',
+//   },
+//   background: {
+//     position: 'absolute',
+//     top: 0,
+//     left: 0,
+//     right: 0,
+//     height: height * 0.6,
+//   },
+//   circleContainer: {
+//     height: height * 0.5,
 //     alignItems: 'center',
+//     justifyContent: 'center',
 //   },
-//   image: {
-//     width: 250, // Adjust width as needed
-//     height: 180, // Adjust height as needed
-//     marginBottom: 20,
+//   circle: {
+//     width: width * 0.8,
+//     height: width * 0.8,
+//     borderRadius: width * 0.45,
+//     backgroundColor: '#ffffff',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     overflow: 'hidden',
 //   },
-//   heading: {
-//     fontSize: 18,
+//   illustration: {
+//     width: width * 0.7,
+//     height: width * 0.7,
+//   },
+//   bottomContainer: {
+//     flex: 1,
+//     backgroundColor: 'white',
+//     borderTopLeftRadius: 30,
+//     borderTopRightRadius: 30,
+//     paddingHorizontal: 20,
+//     paddingTop: 30,
+//     marginTop: -30,
+//   },
+//   headerText: {
+//     fontSize: 24,
 //     fontWeight: 'bold',
-//     marginBottom: 20,
+//     textAlign: 'center',
+//     marginBottom: 30,
 //   },
 //   button: {
-//     backgroundColor: '#2E8B57',
-//     paddingVertical: 12,
-//     paddingHorizontal: 25,
-//     borderRadius: 25,
-//     marginBottom: 15,
-//     width: '100%',
+//     backgroundColor: '#164860',
+//     borderRadius: 50,
+//     paddingVertical: 18,
 //     alignItems: 'center',
+//     marginBottom: 20,
 //   },
 //   buttonText: {
-//     color: '#fff',
-//     fontSize: 16,
-//     fontWeight: 'bold',
+//     color: 'white',
+//     fontSize: 18,
+//     fontWeight: '500',
 //   },
-//   footerText: {
+//   signInContainer: {
+//     flexDirection: 'row',
+//     justifyContent: 'center',
 //     marginTop: 20,
-//     fontSize: 14,
 //   },
-//   signIn: {
-//     color: '#8B0000',
-//     fontWeight: 'bold',
+//   signInText: {
+//     fontSize: 16,
+//     color: '#333',
+//   },
+//   signInLink: {
+//     fontSize: 16,
+//     color: '#164860',
+//     fontWeight: '500',
 //   },
 // });
 
@@ -81,7 +153,10 @@
 
 
 
-import React from 'react';
+
+
+
+import React, { useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -90,71 +165,100 @@ import {
   TouchableOpacity, 
   SafeAreaView, 
   Dimensions, 
-  StatusBar
+  StatusBar 
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-// import { useNavigation } from '@react-navigation/native';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withTiming, 
+  withSpring 
+} from 'react-native-reanimated';
 import { StackNavigationProp } from '@react-navigation/stack';
+// import LottieView from 'lottie-react-native';
 
 const { width, height } = Dimensions.get('window');
-
-
-
 type SelectScreenNavigationProp = StackNavigationProp<any>;
 
 interface SelectScreenProps {
-  navigation:SelectScreenNavigationProp;
+  navigation: SelectScreenNavigationProp;
 }
 
-const SelectScreen: React.FC<SelectScreenProps> = ({ navigation}) => {
-  // const navigation = useNavigation();
+const SelectScreen: React.FC<SelectScreenProps> = ({ navigation }) => {
+  // Animation values
+  const fadeIn = useSharedValue(0);   // Controls the opacity
+  const scale = useSharedValue(0.5);  // Controls the size of the image
+  const slideUp = useSharedValue(100);// Controls the bottom container movement
+
+  // Animated styles
+  const fadeInStyle = useAnimatedStyle(() => ({
+    opacity: fadeIn.value,
+  }));
+
+  const scaleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const slideUpStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: slideUp.value }],
+  }));
+
+  // Run animations when the component mounts
+  useEffect(() => {
+    fadeIn.value = withTiming(1, { duration: 1000 });
+    scale.value = withSpring(1, { damping: 8, stiffness: 100 });
+    slideUp.value = withTiming(0, { duration: 800 });
+  }, [fadeIn, scale, slideUp]);
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Background gradient */}
-     <StatusBar backgroundColor="#164860" barStyle="light-content" />
-      <LinearGradient
-        colors={['#164860', '#164860']}
-        style={styles.background}
-      />
+      <StatusBar backgroundColor="#164860" barStyle="light-content" />
+      <LinearGradient colors={['#164860', '#164860']} style={styles.background} />
       
-      {/* Top circular shape */}
+      {/* Top circular shape with animation */}
       <View style={styles.circleContainer}>
-        <View style={styles.circle}>
-          {/* Hearts and jar illustration */}
+        <Animated.View style={[styles.circle, scaleStyle]}>
           <Image
             source={require('../assets/help.jpg')}
             style={styles.illustration}
             resizeMode="contain"
           />
-        </View>
+          {/* <LottieView source={require('../assets/animations/select.json')} style={styles.illustration} resizeMode="cover" autoPlay loop/> */}
+        </Animated.View>
       </View>
-      
-      {/* Bottom content */}
-      <View style={styles.bottomContainer}>
-        <Text style={styles.headerText}>Select an option to start</Text>
-        
-        {/* Start a free fundraiser button */}
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={() => navigation.navigate('Welcome')}
-        >
-          <Text style={styles.buttonText}>Start a free fundraiser</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={() => navigation.navigate('Welcome')}
-        >
-          <Text style={styles.buttonText}>Make a donation</Text>
-        </TouchableOpacity>
-        
+
+      {/* Bottom content with slide-up effect */}
+      <Animated.View style={[styles.bottomContainer, slideUpStyle]}>
+        <Animated.Text style={[styles.headerText, fadeInStyle]}>
+          Select an option to start
+        </Animated.Text>
+
+        {/* Buttons with fade-in effect */}
+        <Animated.View style={fadeInStyle}>
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={() => navigation.navigate('NGOWelcome')}
+          >
+            <Text style={styles.buttonText}>Start a free fundraiser</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={() => navigation.navigate('Welcome')}
+          >
+            <Text style={styles.buttonText}>Make a donation</Text>
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* Sign-in link */}
         <View style={styles.signInContainer}>
           <Text style={styles.signInText}>Already have an account? </Text>
-          <TouchableOpacity >
+          <TouchableOpacity>
             <Text style={styles.signInLink}>Sign in</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 };
