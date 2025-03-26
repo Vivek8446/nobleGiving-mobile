@@ -121,12 +121,12 @@ const styles = StyleSheet.create({
         marginBottom: 15,
       },
       createAccountButton: {
-        backgroundColor: '#164860',
+        backgroundColor: '#01d6d4',
       },
       loginButton: {
         backgroundColor: '#fff',
         borderWidth: 1,
-        borderColor: '#164860',
+        borderColor: '#01d6d4',
       },
       buttonTextWhite: {
         color: '#fff',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
       },
       
       buttonTextPurple: {
-        color: '#164860',
+        color: '#01d6d4',
         fontWeight: 'bold',
       },
       socialButtonsContainer: {

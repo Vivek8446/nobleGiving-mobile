@@ -19,6 +19,8 @@ import { View } from 'react-native';
 import OnboardingSlider from './components/OnboardingSlider';
 import NGORegistration from './screens/NGO/NGORegistration';
 import NGOWelcomeScreen from './screens/NGO/NGOWelcomeScreen';
+import NGOLogin from './screens/NGO/NGOLogin';
+import NgoOTPVerification from './screens/NGO/NgoOTPVerification';
 
 const Stack = createStackNavigator();
 
@@ -35,32 +37,6 @@ const OtpVerificationWrapper = ({ navigation, route }: { navigation: any; route:
 
 
 const App = () => {
-
-  // const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
-  
-  // useEffect(() => {
-  //   checkOnboardingStatus();
-  // }, []);
-  
-  // const checkOnboardingStatus = async () => {
-  //   try {
-  //     const value = await AsyncStorage.getItem('hasSeenOnboarding');
-  //     // Show onboarding if user hasn't seen it before
-  //     setShowOnboarding(value !== 'true');
-  //   } catch (error) {
-  //     console.log('Error checking onboarding status:', error);
-  //     setShowOnboarding(true); // Default to showing onboarding if error
-  //   }
-  // };
-  
-  // const handleOnboardingFinish = () => {
-  //   setShowOnboarding(false);
-  // };
-  
-  // // Show loading screen while checking AsyncStorage
-  // if (showOnboarding === null) {
-  //   return <View style={{flex:1}} />;
-  // }
 
 
   return (
@@ -164,6 +140,16 @@ const App = () => {
         <Stack.Screen
           name="NGORegistration"
           component={NGORegistration}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="NGOLogin"
+          component={NGOLogin}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="NgoOTPVerification"
+          component={NgoOTPVerification}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

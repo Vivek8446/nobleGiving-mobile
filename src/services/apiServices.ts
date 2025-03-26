@@ -12,8 +12,22 @@ const EndPoint = {
     verify_otp: '/verify-otp',
     reset_password: 'doner/auth/reset-pass',
     get_all_ngo: 'getallNgos?',
+
+
+    // NGO auth
     ngo_signUp: 'ngo/auth/signup',
     update_ngo_profile: 'update-ngo/?',
+    ngo_signup_verify_email: 'ngo/auth/signup/verify-email',
+    ngo_signup_verify_otp: 'ngo/auth/signup/verify-otp',
+    ngo_login: 'ngo/auth/login',
+    ngo_login_resend_otp: 'ngo/auth/login/resend-otp',
+    ngo_login_verify_otp: 'ngo/auth/login/verify-otp',
+    ngo_reset_password: 'ngo/auth/login/reset-pass',
+    ngo_upload_image: 'ngo/upload-img',
+    ngo_get_image: 'ngo/get-images/',
+    ngo_update_profile: 'update-ngo/',
+    ngo_get_sas_url: 'ngo/get-sas-url',
+
 };
 
 // API service functions

@@ -60,15 +60,19 @@ const styles = StyleSheet.create({
     inputWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        // backgroundColor: '#f5f5f5',
         borderRadius: 10,
+        borderWidth:1,
+        borderColor:'#ccc',
     },
     iconContainer: {
         padding: 15,
+        
     },
     input: {
         flex: 1,
         padding: 15,
+        
     },
     eyeIcon: {
         padding: 15,
